@@ -822,7 +822,12 @@ async function selectClient(id, nom) {
     if(c.contact) contacts.push(`👤 ${c.contact}${c.telephone?' — '+c.telephone:''}`);
     if(c.contact2) contacts.push(`👤 ${c.contact2}${c.telephone2?' — '+c.telephone2:''}`);
     const box=document.getElementById('client-info-box');
-    box.innerHTML=[adresse?`📍 ${adresse}`:'',...contacts,c.email?`✉️ ${c.email}`:'',c.siret?`🏢 ${c.siret}`:'''].filter(Boolean).join('<br>');
+    const infoLines=[];
+    if(adresse) infoLines.push('📍 '+adresse);
+    infoLines.push(...contacts);
+    if(c.email) infoLines.push('✉️ '+c.email);
+    if(c.siret) infoLines.push('🏢 '+c.siret);
+    box.innerHTML=infoLines.join('<br>');
     box.style.display='block';
   }
   try {
