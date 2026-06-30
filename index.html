@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ISSEO — Interventions</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.7/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: Arial, sans-serif; background: #f0f0f0; color: #333; min-height: 100vh; }
@@ -58,17 +59,13 @@ input[type=text], input[type=date], input[type=number], input[type=email], selec
 input:focus, select:focus, textarea:focus { outline: none; border-color: #E97300; background: white; }
 textarea { resize: vertical; min-height: 70px; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 
-/* INFO CLIENT */
 .client-info-box {
   background: #f0f9ff; border: 1px solid #bee3f8;
   border-radius: 8px; padding: 10px 12px; margin-top: 8px;
   font-size: 12px; color: #444; line-height: 1.8; display: none;
 }
-.client-info-box strong { color: #2c5282; }
 
-/* MACHINE SECTION */
 .machine-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
 .machine-tab {
   padding: 6px 14px; border: 1px solid #ddd; border-radius: 20px;
@@ -87,6 +84,7 @@ textarea { resize: vertical; min-height: 70px; }
 .btn-grey { background: #666; color: white; }
 .btn-green { background: #8CC52A; color: white; }
 .btn-blue { background: #2980b9; color: white; }
+.btn-red { background: #e74c3c; color: white; }
 .btn-sm { padding: 6px 12px; font-size: 12px; width: auto; margin-top: 0; }
 
 .badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; }
@@ -95,19 +93,16 @@ textarea { resize: vertical; min-height: 70px; }
 .badge-transmis { background: #d1f2eb; color: #0e6655; }
 .badge-cloture { background: #d5f5e3; color: #1e8449; }
 
-/* PIECES */
 .piece-header { display: grid; grid-template-columns: 80px 1fr 55px 65px 28px; gap: 5px; margin-bottom: 4px; }
 .piece-header span { font-size: 11px; color: #999; }
 .piece-row { display: grid; grid-template-columns: 80px 1fr 55px 65px 28px; gap: 5px; align-items: center; margin-bottom: 5px; }
 .piece-row input { font-size: 12px; padding: 7px 6px; }
 .btn-del { background: #e74c3c; color: white; border: none; border-radius: 6px; padding: 7px 8px; cursor: pointer; font-size: 13px; }
 
-/* SIGNATURES */
 .sig-wrap { border: 2px solid #ddd; border-radius: 8px; background: white; overflow: hidden; margin-top: 6px; }
 canvas { width: 100% !important; height: 150px; display: block; background: white; }
 .sig-actions { padding: 5px 8px; }
 
-/* TOTAUX */
 .total-box { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
 .total-line { display: flex; justify-content: space-between; font-size: 13px; padding: 2px 0; }
 .total-line.grand { font-weight: bold; font-size: 15px; border-top: 1px solid #ddd; margin-top: 6px; padding-top: 6px; color: #E97300; }
@@ -115,24 +110,38 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 .taux-toggle { font-size: 12px; color: #41B5A3; cursor: pointer; margin-top: 6px; display: inline-block; }
 .taux-hidden { display: none; }
 
-/* DEPL CHECK */
 .depl-check { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; }
 .depl-check input[type=checkbox] { width: 20px; height: 20px; cursor: pointer; accent-color: #E97300; }
 .depl-check label { font-size: 14px; font-weight: bold; color: #333; margin: 0; cursor: pointer; }
 
-/* AUTOCOMPLETE */
 .ac-wrap { position: relative; }
 .suggestions {
   position: absolute; top: 100%; left: 0; right: 0;
   background: white; border: 1px solid #ddd; border-radius: 0 0 8px 8px;
-  z-index: 50; max-height: 180px; overflow-y: auto; display: none;
+  z-index: 50; max-height: 200px; overflow-y: auto; display: none;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 .suggestions div { padding: 9px 12px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f5f5f5; }
 .suggestions div:hover { background: #fff3e8; }
 .suggestions div small { color: #aaa; font-size: 11px; display: block; margin-top: 1px; }
 
-/* LISTE OT */
+.site-badge {
+  background: #fff3e8; border: 1px solid #E97300; border-radius: 6px;
+  padding: 8px 12px; margin-top: 8px; font-size: 13px; color: #333; display: none;
+}
+
+/* VOICE */
+.voice-wrap { position: relative; }
+.voice-wrap textarea { padding-right: 42px; }
+.btn-voice {
+  position: absolute; right: 8px; top: 8px;
+  background: none; border: none; font-size: 20px; cursor: pointer;
+  color: #aaa; transition: color 0.2s;
+}
+.btn-voice:hover { color: #E97300; }
+.btn-voice.recording { color: #e74c3c; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
 .ot-item {
   background: white; border-radius: 10px; padding: 12px 14px;
   margin-bottom: 8px; cursor: pointer; border-left: 4px solid #ddd;
@@ -146,13 +155,11 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 .ot-num { font-weight: bold; font-size: 14px; }
 .ot-info { font-size: 12px; color: #777; }
 
-/* RAPPORT */
 .rapport-tech { background: white; border-radius: 10px; padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .rapport-tech h4 { color: #E97300; font-size: 14px; margin-bottom: 10px; }
 .rapport-line { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid #f5f5f5; }
 .rapport-total { font-weight: bold; color: #41B5A3; margin-top: 8px; font-size: 13px; display: flex; justify-content: space-between; }
 
-/* CLIENTS */
 .client-item {
   background: white; border-radius: 8px; padding: 12px 14px;
   margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
@@ -161,18 +168,21 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 .client-name { font-weight: bold; font-size: 14px; }
 .client-sub { font-size: 12px; color: #888; margin-top: 2px; }
 
-/* SEARCH BAR CLIENTS */
 .search-clients {
   width: 100%; border: 1px solid #ddd; border-radius: 8px;
-  padding: 10px 14px; font-size: 14px; margin-bottom: 12px;
-  background: white;
+  padding: 10px 14px; font-size: 14px; margin-bottom: 12px; background: white;
 }
 .search-clients:focus { outline: none; border-color: #E97300; }
 
-/* MODAL */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; padding: 16px; overflow-y: auto; }
 .modal-box { background: white; border-radius: 12px; padding: 18px; max-width: 520px; margin: 30px auto; }
 .modal-box h3 { color: #E97300; margin-bottom: 14px; font-size: 16px; }
+
+.section-title {
+  font-size: 11px; color: #999; text-transform: uppercase;
+  letter-spacing: 1px; margin: 14px 0 8px; padding-bottom: 4px;
+  border-bottom: 1px solid #eee;
+}
 
 #toast {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -186,6 +196,24 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 .filter-btn { padding: 6px 12px; border: 1px solid #ddd; border-radius: 20px; background: white; font-size: 12px; cursor: pointer; }
 .filter-btn.active { background: #E97300; color: white; border-color: #E97300; }
 
+/* PDF RAPPORT */
+#rapport-pdf { display: none; }
+.pdf-header { background: #E97300; color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+.pdf-header h2 { font-size: 18px; }
+.pdf-header span { font-size: 12px; opacity: 0.85; }
+.pdf-section { padding: 12px 20px; border-bottom: 1px solid #eee; }
+.pdf-section h4 { color: #E97300; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.pdf-row { display: flex; gap: 20px; font-size: 13px; margin-bottom: 4px; }
+.pdf-label { color: #888; min-width: 120px; }
+.pdf-val { font-weight: 500; }
+.pdf-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+.pdf-table th { background: #f5f5f5; padding: 6px 8px; text-align: left; border: 1px solid #eee; }
+.pdf-table td { padding: 5px 8px; border: 1px solid #eee; }
+.pdf-total { background: #fff3e8; font-weight: bold; padding: 10px 20px; font-size: 14px; display: flex; justify-content: space-between; }
+.pdf-sig { display: flex; gap: 20px; padding: 16px 20px; }
+.pdf-sig-box { flex: 1; border: 1px solid #ddd; border-radius: 6px; padding: 8px; text-align: center; }
+.pdf-sig-box p { font-size: 11px; color: #888; margin-bottom: 6px; }
+
 @media (max-width: 420px) {
   .piece-header, .piece-row { grid-template-columns: 65px 1fr 45px 58px 26px; }
 }
@@ -193,6 +221,7 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 </head>
 <body>
 <div id="toast"></div>
+<div id="rapport-pdf"></div>
 
 <header>
   <h1>🔧 ISSEO — Interventions</h1>
@@ -207,7 +236,6 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
   <button onclick="showPage('page-clients',this)" id="nav-clients" style="display:none">👥 Clients</button>
 </nav>
 
-<!-- ======= PAGE NOUVEAU ======= -->
 <div class="page active" id="page-nouveau">
 
   <div class="card">
@@ -238,6 +266,13 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
       <div class="suggestions" id="client-sugg"></div>
     </div>
     <div class="client-info-box" id="client-info-box"></div>
+    <div id="site-wrap" style="display:none;margin-top:10px">
+      <label>Site d'intervention</label>
+      <select id="f-site" onchange="selectSite()">
+        <option value="">— Sélectionner un site —</option>
+      </select>
+      <div class="site-badge" id="site-info"></div>
+    </div>
   </div>
 
   <div class="card">
@@ -246,7 +281,6 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
       <div class="machine-tab active" onclick="switchMachineTab('existing',this)">Machine existante</div>
       <div class="machine-tab" onclick="switchMachineTab('new',this)">＋ Nouvelle machine</div>
     </div>
-
     <div id="machine-existing">
       <select id="f-machine" onchange="selectMachine()">
         <option value="">— Sélectionner une machine —</option>
@@ -257,7 +291,6 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
         <div><label>Horamètre</label><input type="number" id="f-horametre" placeholder="ex: 1250" min="0"></div>
       </div>
     </div>
-
     <div id="machine-new" style="display:none">
       <div class="row2">
         <div><label>Marque *</label><input type="text" id="fn-marque" placeholder="ex: Hangcha"></div>
@@ -299,12 +332,24 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
       <option>Full Service</option>
       <option>Démonstration</option>
     </select>
+
     <label>Description des travaux *</label>
-    <textarea id="f-desc" placeholder="Détail des opérations effectuées..."></textarea>
+    <div class="voice-wrap">
+      <textarea id="f-desc" placeholder="Détail des opérations effectuées..."></textarea>
+      <button class="btn-voice" id="voice-desc" onclick="startVoice('f-desc','voice-desc')" title="Dictée vocale">🎤</button>
+    </div>
+
     <label>Travaux à prévoir / Remarques internes</label>
-    <textarea id="f-remarques-int" placeholder="À noter pour le suivi interne..." style="min-height:55px"></textarea>
+    <div class="voice-wrap">
+      <textarea id="f-remarques-int" placeholder="À noter pour le suivi interne..." style="min-height:55px"></textarea>
+      <button class="btn-voice" id="voice-int" onclick="startVoice('f-remarques-int','voice-int')" title="Dictée vocale">🎤</button>
+    </div>
+
     <label>Remarques client</label>
-    <textarea id="f-remarques-client" placeholder="Visible sur le document client..." style="min-height:55px"></textarea>
+    <div class="voice-wrap">
+      <textarea id="f-remarques-client" placeholder="Visible sur le document client..." style="min-height:55px"></textarea>
+      <button class="btn-voice" id="voice-client" onclick="startVoice('f-remarques-client','voice-client')" title="Dictée vocale">🎤</button>
+    </div>
   </div>
 
   <div class="card">
@@ -369,7 +414,6 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
   <div style="height:24px"></div>
 </div>
 
-<!-- ======= PAGE LISTE ======= -->
 <div class="page" id="page-liste">
   <div class="filter-btns">
     <button class="filter-btn active" onclick="filtrer('tous',this)">Tous</button>
@@ -381,7 +425,6 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
   <div id="liste-ot"><div class="empty-state">Chargement...</div></div>
 </div>
 
-<!-- ======= PAGE RAPPORT ======= -->
 <div class="page" id="page-rapport">
   <div class="card">
     <h3>Rapport journalier</h3>
@@ -401,7 +444,6 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
   <div id="rapport-content"><div class="empty-state">Sélectionner une date</div></div>
 </div>
 
-<!-- ======= PAGE CLIENTS ======= -->
 <div class="page" id="page-clients">
   <button class="btn btn-orange" onclick="ouvrirModalClient()" style="margin-bottom:12px">+ Nouveau client</button>
   <input type="text" class="search-clients" id="search-clients" placeholder="🔍 Rechercher un client..." oninput="filtrerListeClients()">
@@ -413,17 +455,29 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
   <div class="modal-box">
     <h3>👥 Client</h3>
     <input type="hidden" id="mc-id">
+    <div class="section-title">Identification</div>
     <label>Nom *</label><input type="text" id="mc-nom" placeholder="Raison sociale">
+    <label>SIRET</label><input type="text" id="mc-siret" placeholder="123 456 789 00000">
+    <div class="section-title">Adresse siège</div>
     <label>Adresse</label><input type="text" id="mc-adresse" placeholder="Rue">
     <div class="row2" style="margin-top:8px">
       <div><label>Code postal</label><input type="text" id="mc-cp" placeholder="13000"></div>
       <div><label>Ville</label><input type="text" id="mc-ville" placeholder="Arles"></div>
     </div>
-    <label>Contact</label><input type="text" id="mc-contact" placeholder="Nom du contact">
-    <label>Téléphone</label><input type="text" id="mc-tel" placeholder="06...">
+    <div class="section-title">Contacts</div>
+    <div class="row2">
+      <div><label>Contact 1</label><input type="text" id="mc-contact" placeholder="Nom prénom"></div>
+      <div><label>Tél. contact 1</label><input type="text" id="mc-tel" placeholder="06..."></div>
+    </div>
+    <div class="row2" style="margin-top:8px">
+      <div><label>Contact 2</label><input type="text" id="mc-contact2" placeholder="Nom prénom"></div>
+      <div><label>Tél. contact 2</label><input type="text" id="mc-tel2" placeholder="06..."></div>
+    </div>
     <label>Email</label><input type="email" id="mc-email" placeholder="email@client.fr">
-    <label>SIRET</label><input type="text" id="mc-siret" placeholder="123 456 789 00000">
-    <h4 style="margin-top:14px;margin-bottom:8px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Machines</h4>
+    <div class="section-title">Sites d'intervention</div>
+    <div id="mc-sites"></div>
+    <button class="btn btn-teal btn-sm" onclick="ajouterSiteModal()" style="margin-top:6px">+ Ajouter un site</button>
+    <div class="section-title">Machines</div>
     <div id="mc-machines"></div>
     <button class="btn btn-grey btn-sm" onclick="ajouterMachineModal()" style="margin-top:4px">+ Machine</button>
     <div style="display:flex;gap:8px;margin-top:14px">
@@ -445,6 +499,7 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 <script>
 const SB_URL = 'https://svcaftiobsuihzlzuiup.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2Y2FmdGlvYnN1aWh6bHp1aXVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NDAwMzksImV4cCI6MjA5ODMxNjAzOX0.mhDwihGon9ByUR-aEU1O0ImnaRHBWMOBqG0Oc6sE4Zg';
+const EMAIL_ISSEO = 'contact@isseochariot.fr';
 
 async function sb(method, table, data, filters='') {
   const res = await fetch(`${SB_URL}/rest/v1/${table}${filters}`, {
@@ -465,10 +520,168 @@ let clientsCache = [];
 let tousLesClients = [];
 let filtreActuel = 'tous';
 let machinesModal = [];
+let sitesModal = [];
 let pieces = [];
 let sigTech, sigClient;
 let nouvellemachineSauvegardeeId = null;
 let clientSelectionne = null;
+let siteSelectionne = null;
+let activeRecognition = null;
+
+// ====== VOICE ======
+function startVoice(fieldId, btnId) {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    toast('❌ Dictée vocale non supportée sur ce navigateur', 3000);
+    return;
+  }
+  const btn = document.getElementById(btnId);
+  if (activeRecognition) {
+    activeRecognition.stop();
+    activeRecognition = null;
+    btn.classList.remove('recording');
+    btn.textContent = '🎤';
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const r = new SR();
+  r.lang = 'fr-FR';
+  r.continuous = true;
+  r.interimResults = false;
+  activeRecognition = r;
+  btn.classList.add('recording');
+  btn.textContent = '⏹';
+  r.onresult = e => {
+    const field = document.getElementById(fieldId);
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        field.value += (field.value ? ' ' : '') + e.results[i][0].transcript;
+      }
+    }
+  };
+  r.onerror = () => { btn.classList.remove('recording'); btn.textContent = '🎤'; activeRecognition = null; };
+  r.onend = () => { btn.classList.remove('recording'); btn.textContent = '🎤'; activeRecognition = null; };
+  r.start();
+  toast('🎤 Dictée en cours... Appuyez à nouveau pour arrêter');
+}
+
+// ====== PDF ======
+function genererRapportHTML(o) {
+  const totalMO = (o.heures_mo||0) * (o.taux_mo||75);
+  const totalPieces = (o.pieces_utilisees||[]).reduce((s,p)=>s+(p.qte*p.pu),0);
+  const totalHT = totalMO + totalPieces;
+
+  const piecesHTML = (o.pieces_utilisees||[]).length ? `
+    <table class="pdf-table">
+      <tr><th>Référence</th><th>Désignation</th><th>Qté</th><th>Prix U.</th><th>Total</th></tr>
+      ${(o.pieces_utilisees||[]).map(p=>`<tr>
+        <td>${p.ref||''}</td><td>${p.designation||''}</td>
+        <td style="text-align:center">${p.qte}</td>
+        <td style="text-align:right">${(p.pu||0).toFixed(2)}€</td>
+        <td style="text-align:right">${(p.qte*p.pu).toFixed(2)}€</td>
+      </tr>`).join('')}
+    </table>` : '<p style="font-size:12px;color:#aaa">Aucune pièce</p>';
+
+  return `
+    <div style="font-family:Arial,sans-serif;max-width:800px;margin:0 auto;background:white">
+      <div class="pdf-header">
+        <div>
+          <h2>Rapport d'intervention</h2>
+          <span>ISSEO CHARIOTS ÉLÉVATEURS — contact@isseochariot.fr — 04 42 06 70 14</span>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:22px;font-weight:bold">${o.numero_ot}</div>
+          <div style="font-size:12px;opacity:0.85">${o.date_intervention||''}</div>
+        </div>
+      </div>
+      <div class="pdf-section">
+        <h4>Client</h4>
+        <div class="pdf-row"><span class="pdf-label">Société</span><span class="pdf-val">${o.client||'-'}</span></div>
+        ${o.site_nom?`<div class="pdf-row"><span class="pdf-label">Site</span><span class="pdf-val">${o.site_nom}</span></div>`:''}
+      </div>
+      <div class="pdf-section">
+        <h4>Machine</h4>
+        <div class="pdf-row"><span class="pdf-label">Machine</span><span class="pdf-val">${o.machine||'-'}</span></div>
+        ${o.numero_serie?`<div class="pdf-row"><span class="pdf-label">N° Série</span><span class="pdf-val">${o.numero_serie}</span></div>`:''}
+        ${o.horametre?`<div class="pdf-row"><span class="pdf-label">Horamètre</span><span class="pdf-val">${o.horametre} h</span></div>`:''}
+      </div>
+      <div class="pdf-section">
+        <h4>Intervention</h4>
+        <div class="pdf-row"><span class="pdf-label">Technicien</span><span class="pdf-val">${o.technicien||'-'}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Type</span><span class="pdf-val">${o.type_intervention||'-'}</span></div>
+        <div class="pdf-row"><span class="pdf-label">Description</span><span class="pdf-val">${o.description||'-'}</span></div>
+        ${o.remarques_client?`<div class="pdf-row"><span class="pdf-label">Remarques</span><span class="pdf-val">${o.remarques_client}</span></div>`:''}
+      </div>
+      <div class="pdf-section">
+        <h4>Pièces utilisées</h4>
+        ${piecesHTML}
+      </div>
+      <div class="pdf-section">
+        <h4>Main d'œuvre & Déplacement</h4>
+        <div class="pdf-row"><span class="pdf-label">Heures MO</span><span class="pdf-val">${o.heures_mo||0} h</span></div>
+        <div class="pdf-row"><span class="pdf-label">Déplacement</span><span class="pdf-val">${o.deplacement_effectue?'1 forfait':'—'}</span></div>
+      </div>
+      <div class="pdf-total">
+        <span>TOTAL HT</span>
+        <span>${totalHT.toFixed(2)} €</span>
+      </div>
+      <div class="pdf-sig">
+        <div class="pdf-sig-box">
+          <p>Signature technicien</p>
+          ${o.signature_tech?`<img src="${o.signature_tech}" style="max-height:80px;max-width:100%">`:'<div style="height:60px"></div>'}
+        </div>
+        <div class="pdf-sig-box">
+          <p>Signature client (bon pour accord)</p>
+          ${o.signature_client?`<img src="${o.signature_client}" style="max-height:80px;max-width:100%">`:'<div style="height:60px"></div>'}
+        </div>
+      </div>
+      <div style="text-align:center;font-size:10px;color:#aaa;padding:10px">
+        ISSEO CHARIOTS ÉLÉVATEURS — SIREN 911977809 — Arles (13)
+      </div>
+    </div>`;
+}
+
+async function cloturerEtEnvoyer(o) {
+  toast('📄 Génération du rapport...', 3000);
+  const html = genererRapportHTML(o);
+  const el = document.getElementById('rapport-pdf');
+  el.innerHTML = html;
+  el.style.display = 'block';
+
+  try {
+    await html2pdf().set({
+      margin: 0,
+      filename: `${o.numero_ot}-rapport.pdf`,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(el).save();
+    toast('✅ PDF téléchargé !');
+  } catch(e) {
+    toast('❌ Erreur PDF: ' + e.message, 4000);
+  }
+
+  el.style.display = 'none';
+
+  // Envoi email via Supabase Edge Function
+  try {
+    const emailClient = clientSelectionne?.email || '';
+    await fetch(`${SB_URL}/functions/v1/send-rapport`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SB_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        to: [EMAIL_ISSEO, emailClient].filter(Boolean),
+        subject: `Rapport intervention ${o.numero_ot} — ${o.client}`,
+        html: html,
+        numero_ot: o.numero_ot
+      })
+    });
+    toast('📧 Rapport envoyé par email !');
+  } catch(e) {
+    toast('⚠️ PDF OK mais email non envoyé — configurez la Edge Function', 4000);
+  }
+}
 
 function toggleMode() {
   mode = mode === 'terrain' ? 'bureau' : 'terrain';
@@ -547,20 +760,11 @@ async function enregistrerNouvelleMachine() {
   } catch(e) { toast('❌ '+e.message, 3000); }
 }
 
-// PIECES
-function ajouterPiece() {
-  pieces.push({ id: Date.now(), ref: '', designation: '', qte: 1, pu: 0 });
-  renderPieces();
-}
-function supprimerPiece(id) { pieces = pieces.filter(p => p.id !== id); renderPieces(); calculerTotal(); }
-function updatePiece(id, f, v) {
-  const p = pieces.find(p => p.id === id);
-  if (p) p[f] = (f==='qte'||f==='pu') ? parseFloat(v)||0 : v;
-  calculerTotal();
-}
+function ajouterPiece() { pieces.push({id:Date.now(),ref:'',designation:'',qte:1,pu:0}); renderPieces(); }
+function supprimerPiece(id) { pieces=pieces.filter(p=>p.id!==id); renderPieces(); calculerTotal(); }
+function updatePiece(id,f,v) { const p=pieces.find(p=>p.id===id); if(p) p[f]=(f==='qte'||f==='pu')?parseFloat(v)||0:v; calculerTotal(); }
 function renderPieces() {
-  const el = document.getElementById('pieces-list');
-  el.innerHTML = pieces.map(p => `
+  document.getElementById('pieces-list').innerHTML = pieces.map(p=>`
     <div class="piece-row">
       <input type="text" placeholder="Réf." value="${p.ref}" oninput="updatePiece(${p.id},'ref',this.value)">
       <input type="text" placeholder="Désignation" value="${p.designation}" oninput="updatePiece(${p.id},'designation',this.value)">
@@ -568,224 +772,237 @@ function renderPieces() {
       <input type="number" placeholder="0.00" value="${p.pu||''}" step="0.01" oninput="updatePiece(${p.id},'pu',this.value)">
       <button class="btn-del" onclick="supprimerPiece(${p.id})">×</button>
     </div>`).join('');
-  const total = pieces.reduce((s,p) => s+p.qte*p.pu, 0);
-  document.getElementById('total-pieces-line').style.display = pieces.length ? 'block' : 'none';
-  document.getElementById('total-pieces-val').textContent = total.toFixed(2)+' €';
+  const total=pieces.reduce((s,p)=>s+p.qte*p.pu,0);
+  document.getElementById('total-pieces-line').style.display=pieces.length?'block':'none';
+  document.getElementById('total-pieces-val').textContent=total.toFixed(2)+' €';
 }
 
 function calculerTotal() {
-  const hmo = parseFloat(document.getElementById('f-hmo').value)||0;
-  const tmo = parseFloat(document.getElementById('f-tmo').value)||75;
-  const totalMO = hmo * tmo;
-  const totalPieces = pieces.reduce((s,p) => s+p.qte*p.pu, 0);
-  document.getElementById('t-mo').textContent = totalMO.toFixed(2)+' €';
-  document.getElementById('t-pieces').textContent = totalPieces.toFixed(2)+' €';
-  document.getElementById('t-ht').textContent = (totalMO+totalPieces).toFixed(2)+' €';
-  const depl = document.getElementById('f-depl-check').checked;
-  document.getElementById('total-box').style.display = (hmo||totalPieces||depl) ? 'block' : 'none';
+  const hmo=parseFloat(document.getElementById('f-hmo').value)||0;
+  const tmo=parseFloat(document.getElementById('f-tmo').value)||75;
+  const totalMO=hmo*tmo;
+  const totalPieces=pieces.reduce((s,p)=>s+p.qte*p.pu,0);
+  document.getElementById('t-mo').textContent=totalMO.toFixed(2)+' €';
+  document.getElementById('t-pieces').textContent=totalPieces.toFixed(2)+' €';
+  document.getElementById('t-ht').textContent=(totalMO+totalPieces).toFixed(2)+' €';
+  const depl=document.getElementById('f-depl-check').checked;
+  document.getElementById('total-box').style.display=(hmo||totalPieces||depl)?'block':'none';
 }
 
-// CLIENT AUTOCOMPLETE — connecté à la base Odoo dans Supabase
 async function chargerClientsCache() {
   try {
-    clientsCache = await sb('GET','clients',null,'?order=nom&select=id,nom,telephone,email,adresse,ville,code_postal,siret,contact');
+    clientsCache = await sb('GET','clients',null,'?order=nom&select=id,nom,telephone,telephone2,email,adresse,ville,code_postal,siret,contact,contact2');
     tousLesClients = [...clientsCache];
   } catch(e) { clientsCache=[]; tousLesClients=[]; }
 }
 
 function rechercherClient() {
-  const val = document.getElementById('f-client').value.toLowerCase().trim();
-  const sugg = document.getElementById('client-sugg');
-  if (val.length < 2) { sugg.style.display='none'; return; }
-  const m = clientsCache.filter(c => c.nom && c.nom.toLowerCase().includes(val)).slice(0,8);
-  if (!m.length) { sugg.style.display='none'; return; }
-  sugg.innerHTML = m.map(c => {
-    const ville = c.ville ? ` — ${c.ville}` : '';
-    const tel = c.telephone ? ` · ${c.telephone}` : '';
-    return `<div onclick="selectClient('${c.id}','${(c.nom||'').replace(/'/g,"\\'")}')">
-      <strong>${c.nom}</strong>${ville}
-      <small>${tel}</small>
-    </div>`;
-  }).join('');
-  sugg.style.display = 'block';
+  const val=document.getElementById('f-client').value.toLowerCase().trim();
+  const sugg=document.getElementById('client-sugg');
+  if(val.length<2){sugg.style.display='none';return;}
+  const m=clientsCache.filter(c=>c.nom&&c.nom.toLowerCase().includes(val)).slice(0,8);
+  if(!m.length){sugg.style.display='none';return;}
+  sugg.innerHTML=m.map(c=>`<div onclick="selectClient('${c.id}','${(c.nom||'').replace(/'/g,"\\'")}')">
+    <strong>${c.nom}</strong>${c.ville?' — '+c.ville:''}
+    <small>${c.telephone?' · '+c.telephone:''}</small>
+  </div>`).join('');
+  sugg.style.display='block';
 }
 
 async function selectClient(id, nom) {
-  document.getElementById('f-client').value = nom;
-  document.getElementById('f-client-id').value = id;
-  document.getElementById('client-sugg').style.display = 'none';
-
-  // Afficher infos client enrichies avec nouveaux champs Odoo
-  const c = clientsCache.find(x => x.id === id);
-  if (c) {
-    clientSelectionne = c;
-    const adresseLigne = [c.adresse, [c.code_postal, c.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
-    const box = document.getElementById('client-info-box');
-    box.innerHTML = [
-      adresseLigne ? `📍 ${adresseLigne}` : '',
-      c.contact ? `👤 ${c.contact}` : '',
-      c.telephone ? `📞 ${c.telephone}` : '',
-      c.email ? `✉️ ${c.email}` : '',
-      c.siret ? `🏢 SIRET : ${c.siret}` : ''
-    ].filter(Boolean).join('<br>');
-    box.style.display = 'block';
+  document.getElementById('f-client').value=nom;
+  document.getElementById('f-client-id').value=id;
+  document.getElementById('client-sugg').style.display='none';
+  siteSelectionne=null;
+  const c=clientsCache.find(x=>x.id===id);
+  if(c){
+    clientSelectionne=c;
+    const adresse=[c.adresse,[c.code_postal,c.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    const contacts=[];
+    if(c.contact) contacts.push(`👤 ${c.contact}${c.telephone?' — '+c.telephone:''}`);
+    if(c.contact2) contacts.push(`👤 ${c.contact2}${c.telephone2?' — '+c.telephone2:''}`);
+    const box=document.getElementById('client-info-box');
+    box.innerHTML=[adresse?`📍 ${adresse}`:'',...contacts,c.email?`✉️ ${c.email}`:'',c.siret?`🏢 ${c.siret}`:'''].filter(Boolean).join('<br>');
+    box.style.display='block';
   }
-
-  // Charger machines du client
   try {
-    const machines = await sb('GET','machines',null,`?client_id=eq.${id}&order=modele`);
-    const sel = document.getElementById('f-machine');
-    sel.innerHTML = '<option value="">— Sélectionner une machine —</option>' +
-      machines.map(m => `<option value="${m.id}" data-serie="${m.numero_serie||''}" data-marque="${m.marque||''}" data-modele="${m.modele||''}">${m.marque||''} ${m.modele||''} — ${m.numero_serie||'sans N°'}</option>`).join('');
-  } catch(e) {}
+    const sites=await sb('GET','sites',null,`?client_id=eq.${id}&order=nom`);
+    const sw=document.getElementById('site-wrap');
+    const ss=document.getElementById('f-site');
+    if(sites.length>0){
+      ss.innerHTML='<option value="">— Sélectionner un site —</option>'+
+        sites.map(s=>`<option value="${s.id}" data-adresse="${s.adresse||''}" data-cp="${s.code_postal||''}" data-ville="${s.ville||''}" data-contact="${s.contact||''}" data-tel="${s.telephone||''}">${s.nom}</option>`).join('');
+      sw.style.display='block';
+    } else { sw.style.display='none'; }
+    document.getElementById('site-info').style.display='none';
+  } catch(e){}
+  try {
+    const machines=await sb('GET','machines',null,`?client_id=eq.${id}&order=modele`);
+    const sel=document.getElementById('f-machine');
+    sel.innerHTML='<option value="">— Sélectionner une machine —</option>'+
+      machines.map(m=>`<option value="${m.id}" data-serie="${m.numero_serie||''}" data-marque="${m.marque||''}" data-modele="${m.modele||''}">${m.marque||''} ${m.modele||''} — ${m.numero_serie||'sans N°'}</option>`).join('');
+  } catch(e){}
+}
+
+function selectSite() {
+  const sel=document.getElementById('f-site');
+  const opt=sel.options[sel.selectedIndex];
+  const ib=document.getElementById('site-info');
+  if(!sel.value){ib.style.display='none';siteSelectionne=null;return;}
+  siteSelectionne={id:sel.value,nom:opt.text,adresse:opt.dataset.adresse,ville:opt.dataset.ville};
+  const lignes=[
+    opt.dataset.adresse?`📍 ${opt.dataset.adresse}`:'',
+    [opt.dataset.cp,opt.dataset.ville].filter(Boolean).join(' ')?`🏙 ${[opt.dataset.cp,opt.dataset.ville].filter(Boolean).join(' ')}`:'',
+    opt.dataset.contact?`👤 ${opt.dataset.contact}`:'',
+    opt.dataset.tel?`📞 ${opt.dataset.tel}`:''
+  ].filter(Boolean);
+  ib.innerHTML=`<strong>${opt.text}</strong><br>${lignes.join('<br>')}`;
+  ib.style.display='block';
 }
 
 function selectMachine() {
-  const sel = document.getElementById('f-machine');
-  const opt = sel.options[sel.selectedIndex];
-  document.getElementById('f-machine-id').value = sel.value;
-  if (sel.value) document.getElementById('f-serie').value = opt.dataset.serie||'';
+  const sel=document.getElementById('f-machine');
+  const opt=sel.options[sel.selectedIndex];
+  document.getElementById('f-machine-id').value=sel.value;
+  if(sel.value) document.getElementById('f-serie').value=opt.dataset.serie||'';
 }
 
-// SAUVEGARDER OT
 async function sauvegarder(statut) {
-  const ot = document.getElementById('f-ot').value.trim();
-  const date = document.getElementById('f-date').value;
-  const tech = document.getElementById('f-tech').value;
-  if (!ot) { toast('⚠️ N° OT requis'); return; }
-  if (!date) { toast('⚠️ Date requise'); return; }
-  if (!tech) { toast('⚠️ Technicien requis'); return; }
+  const ot=document.getElementById('f-ot').value.trim();
+  const date=document.getElementById('f-date').value;
+  const tech=document.getElementById('f-tech').value;
+  if(!ot){toast('⚠️ N° OT requis');return;}
+  if(!date){toast('⚠️ Date requise');return;}
+  if(!tech){toast('⚠️ Technicien requis');return;}
 
-  const isNewMachine = document.getElementById('machine-new').style.display !== 'none';
-  const deplCheck = document.getElementById('f-depl-check').checked;
+  const isNewMachine=document.getElementById('machine-new').style.display!=='none';
+  const deplCheck=document.getElementById('f-depl-check').checked;
+  let machineLabel='',machineId=null,serie='',horametre=null;
 
-  let machineLabel = '', machineId = null, serie = '', horametre = null;
-
-  if (isNewMachine) {
-    machineLabel = `${document.getElementById('fn-marque').value} ${document.getElementById('fn-modele').value}`.trim();
-    machineId = nouvellemachineSauvegardeeId;
-    serie = document.getElementById('fn-serie').value;
-    horametre = parseFloat(document.getElementById('fn-horametre').value)||null;
+  if(isNewMachine){
+    machineLabel=`${document.getElementById('fn-marque').value} ${document.getElementById('fn-modele').value}`.trim();
+    machineId=nouvellemachineSauvegardeeId;
+    serie=document.getElementById('fn-serie').value;
+    horametre=parseFloat(document.getElementById('fn-horametre').value)||null;
   } else {
-    const sel = document.getElementById('f-machine');
-    const opt = sel.options[sel.selectedIndex];
-    machineLabel = sel.value ? `${opt.dataset.marque||''} ${opt.dataset.modele||''}`.trim() : '';
-    machineId = document.getElementById('f-machine-id').value||null;
-    serie = document.getElementById('f-serie').value;
-    horametre = parseFloat(document.getElementById('f-horametre').value)||null;
+    const sel=document.getElementById('f-machine');
+    const opt=sel.options[sel.selectedIndex];
+    machineLabel=sel.value?`${opt.dataset.marque||''} ${opt.dataset.modele||''}`.trim():'';
+    machineId=document.getElementById('f-machine-id').value||null;
+    serie=document.getElementById('f-serie').value;
+    horametre=parseFloat(document.getElementById('f-horametre').value)||null;
   }
 
-  const data = {
-    numero_ot: ot,
-    date_intervention: date,
-    technicien: tech,
-    client: document.getElementById('f-client').value,
-    client_id: document.getElementById('f-client-id').value||null,
-    machine: machineLabel, machine_id: machineId,
-    numero_serie: serie, horametre,
-    type_intervention: document.getElementById('f-type').value,
-    description: document.getElementById('f-desc').value,
-    pieces_utilisees: pieces.length ? pieces : null,
-    heures_mo: parseFloat(document.getElementById('f-hmo').value)||0,
-    taux_mo: parseFloat(document.getElementById('f-tmo').value)||75,
-    deplacement_effectue: deplCheck,
-    km_deplacement: deplCheck ? parseFloat(document.getElementById('f-km').value)||0 : 0,
-    temps_deplacement_centieme: deplCheck ? parseFloat(document.getElementById('f-hroute').value)||0 : 0,
-    signature_tech: !sigTech.isEmpty() ? sigTech.toDataURL() : null,
-    signature_client: !sigClient.isEmpty() ? sigClient.toDataURL() : null,
+  const data={
+    numero_ot:ot, date_intervention:date, technicien:tech,
+    client:document.getElementById('f-client').value,
+    client_id:document.getElementById('f-client-id').value||null,
+    site_id:siteSelectionne?.id||null, site_nom:siteSelectionne?.nom||null,
+    machine:machineLabel, machine_id:machineId, numero_serie:serie, horametre,
+    type_intervention:document.getElementById('f-type').value,
+    description:document.getElementById('f-desc').value,
+    pieces_utilisees:pieces.length?pieces:null,
+    heures_mo:parseFloat(document.getElementById('f-hmo').value)||0,
+    taux_mo:parseFloat(document.getElementById('f-tmo').value)||75,
+    deplacement_effectue:deplCheck,
+    km_deplacement:deplCheck?parseFloat(document.getElementById('f-km').value)||0:0,
+    temps_deplacement_centieme:deplCheck?parseFloat(document.getElementById('f-hroute').value)||0:0,
+    signature_tech:!sigTech.isEmpty()?sigTech.toDataURL():null,
+    signature_client:!sigClient.isEmpty()?sigClient.toDataURL():null,
     statut, mode,
-    numero_devis: document.getElementById('f-devis').value,
-    remarques_internes: document.getElementById('f-remarques-int').value,
-    remarques_client: document.getElementById('f-remarques-client').value
+    numero_devis:document.getElementById('f-devis').value,
+    remarques_internes:document.getElementById('f-remarques-int').value,
+    remarques_client:document.getElementById('f-remarques-client').value
   };
 
   try {
-    await sb('POST','interventions',data);
-    const msgs = { brouillon:'💾 Brouillon', en_cours:'🔄 En cours sauvegardé', transmis:'📤 Transmis !', cloture:'✅ Clôturé !' };
+    const r=await sb('POST','interventions',data);
+    const msgs={brouillon:'💾 Brouillon',en_cours:'🔄 En cours sauvegardé',transmis:'📤 Transmis !',cloture:'✅ Clôturé !'};
     toast(msgs[statut]);
+    if(statut==='cloture' && r[0]) {
+      await cloturerEtEnvoyer({...data,...r[0]});
+    }
     resetForm();
-    if (statut !== 'brouillon') showPage('page-liste', document.querySelectorAll('nav button')[1]);
-  } catch(e) { toast('❌ '+e.message, 4000); }
+    if(statut!=='brouillon') showPage('page-liste',document.querySelectorAll('nav button')[1]);
+  } catch(e){toast('❌ '+e.message,4000);}
 }
 
 function resetForm() {
   ['f-ot','f-devis','f-client','f-client-id','f-machine-id','f-serie','f-horametre',
    'f-desc','f-remarques-int','f-remarques-client','f-hmo','f-hroute','f-km',
-   'fn-marque','fn-modele','fn-serie','fn-horametre'].forEach(id => {
-    const el = document.getElementById(id); if(el) el.value='';
-  });
+   'fn-marque','fn-modele','fn-serie','fn-horametre'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('f-tech').value='';
   document.getElementById('f-type').value='';
   document.getElementById('fn-type').value='';
   document.getElementById('f-tmo').value='75';
   document.getElementById('f-machine').innerHTML='<option value="">— Sélectionner une machine —</option>';
+  document.getElementById('f-site').innerHTML='<option value="">— Sélectionner un site —</option>';
   document.getElementById('f-depl-check').checked=false;
   document.getElementById('depl-detail').style.display='none';
   document.getElementById('t-depl-line').style.display='none';
   document.getElementById('client-info-box').style.display='none';
+  document.getElementById('site-wrap').style.display='none';
+  document.getElementById('site-info').style.display='none';
   document.getElementById('fn-status').style.display='none';
   pieces=[]; renderPieces(); sigTech.clear(); sigClient.clear();
   document.getElementById('total-box').style.display='none';
-  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
-  clientSelectionne = null;
-  nouvellemachineSauvegardeeId = null;
-  switchMachineTab('existing', document.querySelector('.machine-tab'));
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  clientSelectionne=null; siteSelectionne=null; nouvellemachineSauvegardeeId=null;
+  switchMachineTab('existing',document.querySelector('.machine-tab'));
   genNumOT();
 }
 
 async function genNumOT() {
-  const a = new Date().getFullYear();
+  const a=new Date().getFullYear();
   try {
-    const r = await sb('GET','interventions',null,'?select=numero_ot&order=created_at.desc&limit=1');
-    const n = r.length ? (parseInt((r[0].numero_ot||'').split('-').pop())||0)+1 : 1;
-    document.getElementById('f-ot').value = `OT-${a}-${String(n).padStart(3,'0')}`;
-  } catch(e) { document.getElementById('f-ot').value = `OT-${a}-001`; }
+    const r=await sb('GET','interventions',null,'?select=numero_ot&order=created_at.desc&limit=1');
+    const n=r.length?(parseInt((r[0].numero_ot||'').split('-').pop())||0)+1:1;
+    document.getElementById('f-ot').value=`OT-${a}-${String(n).padStart(3,'0')}`;
+  } catch(e){document.getElementById('f-ot').value=`OT-${a}-001`;}
 }
 
-// LISTE OT
 async function chargerOT() {
-  const el = document.getElementById('liste-ot');
-  el.innerHTML = '<div class="empty-state">Chargement...</div>';
+  const el=document.getElementById('liste-ot');
+  el.innerHTML='<div class="empty-state">Chargement...</div>';
   try {
-    let f = '?order=created_at.desc';
-    if (filtreActuel !== 'tous') f += `&statut=eq.${filtreActuel}`;
-    const ots = await sb('GET','interventions',null,f);
-    if (!ots.length) { el.innerHTML='<div class="empty-state">Aucun OT</div>'; return; }
-    el.innerHTML = ots.map(o => `
+    let f='?order=created_at.desc';
+    if(filtreActuel!=='tous') f+=`&statut=eq.${filtreActuel}`;
+    const ots=await sb('GET','interventions',null,f);
+    if(!ots.length){el.innerHTML='<div class="empty-state">Aucun OT</div>';return;}
+    el.innerHTML=ots.map(o=>`
       <div class="ot-item ${o.statut}" onclick="ouvrirOT('${o.id}')">
         <div class="ot-header">
           <span class="ot-num">${o.numero_ot}</span>
           <span class="badge badge-${o.statut}">${o.statut.replace('_',' ')}</span>
         </div>
-        <div class="ot-info">${o.technicien||''} · ${o.client||''}</div>
+        <div class="ot-info">${o.technicien||''} · ${o.client||''}${o.site_nom?' — '+o.site_nom:''}</div>
         <div class="ot-info">${o.date_intervention||''} · ${o.type_intervention||''} ${o.machine?'· '+o.machine:''}</div>
       </div>`).join('');
-  } catch(e) { el.innerHTML='<div class="empty-state">Erreur</div>'; }
+  } catch(e){el.innerHTML='<div class="empty-state">Erreur</div>';}
 }
 
-function filtrer(f, btn) {
-  filtreActuel = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+function filtrer(f,btn) {
+  filtreActuel=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   chargerOT();
 }
 
 async function ouvrirOT(id) {
   try {
-    const r = await sb('GET','interventions',null,`?id=eq.${id}`);
-    if (!r.length) return;
-    const o = r[0];
-    document.getElementById('modal-ot-titre').textContent = o.numero_ot;
-    const pieces_html = o.pieces_utilisees?.length ?
-      `<table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:4px">
-        <tr style="background:#f5f5f5"><th style="padding:4px;text-align:left">Réf.</th><th style="text-align:left">Désignation</th><th>Qté</th><th>PU</th></tr>
-        ${o.pieces_utilisees.map(p=>`<tr><td style="padding:3px">${p.ref||''}</td><td>${p.designation||''}</td><td style="text-align:center">${p.qte}</td><td style="text-align:right">${p.pu}€</td></tr>`).join('')}
-      </table>` : '<em style="font-size:12px;color:#aaa">Aucune pièce</em>';
+    const r=await sb('GET','interventions',null,`?id=eq.${id}`);
+    if(!r.length) return;
+    const o=r[0];
+    document.getElementById('modal-ot-titre').textContent=o.numero_ot;
+    const ph=o.pieces_utilisees?.length?`<table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:4px">
+      <tr style="background:#f5f5f5"><th style="padding:4px;text-align:left">Réf.</th><th style="text-align:left">Désignation</th><th>Qté</th><th>PU</th></tr>
+      ${o.pieces_utilisees.map(p=>`<tr><td style="padding:3px">${p.ref||''}</td><td>${p.designation||''}</td><td style="text-align:center">${p.qte}</td><td style="text-align:right">${p.pu}€</td></tr>`).join('')}
+    </table>`:'<em style="font-size:12px;color:#aaa">Aucune pièce</em>';
 
-    document.getElementById('modal-ot-content').innerHTML = `
+    document.getElementById('modal-ot-content').innerHTML=`
       <div style="font-size:13px;line-height:2">
         <div><strong>Date :</strong> ${o.date_intervention||'-'} &nbsp; <strong>Technicien :</strong> ${o.technicien||'-'}</div>
-        <div><strong>Client :</strong> ${o.client||'-'}</div>
+        <div><strong>Client :</strong> ${o.client||'-'}${o.site_nom?' — <span style="color:#E97300">'+o.site_nom+'</span>':''}</div>
         <div><strong>Machine :</strong> ${o.machine||'-'} ${o.numero_serie?'('+o.numero_serie+')':''}</div>
         ${o.horametre?`<div><strong>Horamètre :</strong> ${o.horametre} h</div>`:''}
         ${o.numero_devis?`<div><strong>N° Devis/Cde :</strong> ${o.numero_devis}</div>`:''}
@@ -793,103 +1010,104 @@ async function ouvrirOT(id) {
         <div><strong>Description :</strong> ${o.description||'-'}</div>
         ${o.remarques_client?`<div><strong>Remarques client :</strong> ${o.remarques_client}</div>`:''}
         ${o.remarques_internes?`<div style="color:#888"><strong>Remarques internes :</strong> ${o.remarques_internes}</div>`:''}
-        <div><strong>MO :</strong> ${o.heures_mo||0}h &nbsp; <strong>Dépl. :</strong> ${o.deplacement_effectue?'✅ '+o.km_deplacement+'km / '+o.temps_deplacement_centieme+'h route':'—'}</div>
-        <div style="margin-top:8px">${pieces_html}</div>
+        <div><strong>MO :</strong> ${o.heures_mo||0}h &nbsp; <strong>Dépl. :</strong> ${o.deplacement_effectue?'✅ 1 forfait':'—'}</div>
+        <div style="margin-top:8px">${ph}</div>
         <div style="margin-top:8px"><span class="badge badge-${o.statut}">${o.statut.replace('_',' ')}</span></div>
       </div>`;
 
-    const actions = document.getElementById('modal-ot-actions');
-    actions.innerHTML = '';
-    if (o.statut !== 'cloture') {
-      const b1 = document.createElement('button');
+    const actions=document.getElementById('modal-ot-actions');
+    actions.innerHTML='';
+
+    // Bouton PDF
+    const bPDF=document.createElement('button');
+    bPDF.className='btn btn-green btn-sm'; bPDF.textContent='📄 PDF';
+    bPDF.onclick=async()=>{
+      const html=genererRapportHTML(o);
+      const el=document.getElementById('rapport-pdf');
+      el.innerHTML=html; el.style.display='block';
+      await html2pdf().set({margin:0,filename:`${o.numero_ot}-rapport.pdf`,html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4'}}).from(el).save();
+      el.style.display='none';
+    };
+    actions.appendChild(bPDF);
+
+    if(o.statut!=='cloture'){
+      const b1=document.createElement('button');
       b1.className='btn btn-orange btn-sm'; b1.textContent='✅ Clôturer';
       b1.onclick=()=>changerStatut(id,'cloture'); actions.appendChild(b1);
     }
-    if (o.statut === 'brouillon' || o.statut === 'transmis') {
-      const b2 = document.createElement('button');
+    if(o.statut==='brouillon'||o.statut==='transmis'){
+      const b2=document.createElement('button');
       b2.className='btn btn-blue btn-sm'; b2.textContent='🔄 En cours';
       b2.onclick=()=>changerStatut(id,'en_cours'); actions.appendChild(b2);
     }
-    const bF = document.createElement('button');
+    const bF=document.createElement('button');
     bF.className='btn btn-grey btn-sm'; bF.textContent='Fermer';
     bF.onclick=()=>fermerModal('modal-ot'); actions.appendChild(bF);
-
     document.getElementById('modal-ot').style.display='block';
-  } catch(e) { toast('Erreur chargement OT'); }
+  } catch(e){toast('Erreur chargement OT');}
 }
 
-async function changerStatut(id, statut) {
+async function changerStatut(id,statut) {
   try {
     await sb('PATCH','interventions',{statut},`?id=eq.${id}`);
     toast(statut==='cloture'?'✅ Clôturé':'🔄 En cours');
     fermerModal('modal-ot'); chargerOT();
-  } catch(e) { toast('❌ Erreur'); }
+  } catch(e){toast('❌ Erreur');}
 }
 
-// RAPPORT
 async function chargerRapport() {
-  const date = document.getElementById('rapport-date').value;
-  const tech = document.getElementById('rapport-tech').value;
-  if (!date) return;
-  const el = document.getElementById('rapport-content');
-  el.innerHTML = '<div class="empty-state">Chargement...</div>';
+  const date=document.getElementById('rapport-date').value;
+  const tech=document.getElementById('rapport-tech').value;
+  if(!date) return;
+  const el=document.getElementById('rapport-content');
+  el.innerHTML='<div class="empty-state">Chargement...</div>';
   try {
-    let f = `?date_intervention=eq.${date}`;
-    if (tech) f += `&technicien=eq.${encodeURIComponent(tech)}`;
-    const ots = await sb('GET','interventions',null,f+'&order=technicien');
-    if (!ots.length) { el.innerHTML='<div class="empty-state">Aucune intervention ce jour</div>'; return; }
-    const groupes = {};
-    ots.forEach(o => { if(!groupes[o.technicien]) groupes[o.technicien]=[]; groupes[o.technicien].push(o); });
-    el.innerHTML = Object.entries(groupes).map(([tech,list]) => {
-      const totHmo = list.reduce((s,o)=>s+(o.heures_mo||0),0);
-      const totRoute = list.reduce((s,o)=>s+(o.temps_deplacement_centieme||0),0);
-      const totKm = list.reduce((s,o)=>s+(o.km_deplacement||0),0);
-      const deplCount = list.filter(o=>o.deplacement_effectue).length;
+    let f=`?date_intervention=eq.${date}`;
+    if(tech) f+=`&technicien=eq.${encodeURIComponent(tech)}`;
+    const ots=await sb('GET','interventions',null,f+'&order=technicien');
+    if(!ots.length){el.innerHTML='<div class="empty-state">Aucune intervention ce jour</div>';return;}
+    const groupes={};
+    ots.forEach(o=>{if(!groupes[o.technicien])groupes[o.technicien]=[];groupes[o.technicien].push(o);});
+    el.innerHTML=Object.entries(groupes).map(([tech,list])=>{
+      const totHmo=list.reduce((s,o)=>s+(o.heures_mo||0),0);
+      const totKm=list.reduce((s,o)=>s+(o.km_deplacement||0),0);
+      const deplCount=list.filter(o=>o.deplacement_effectue).length;
       return `<div class="rapport-tech">
         <h4>👤 ${tech}</h4>
         ${list.map(o=>`<div class="rapport-line">
-          <span>${o.numero_ot} — ${o.client||'-'} <span class="badge badge-${o.statut}" style="font-size:10px">${o.statut.replace('_',' ')}</span></span>
+          <span>${o.numero_ot} — ${o.client||'-'}${o.site_nom?' ('+o.site_nom+')':''} <span class="badge badge-${o.statut}" style="font-size:10px">${o.statut.replace('_',' ')}</span></span>
           <span>${o.heures_mo||0}h · ${o.deplacement_effectue?o.km_deplacement+'km':'-'}</span>
         </div>`).join('')}
-        <div class="rapport-total">
-          <span>TOTAL JOUR</span>
-          <span>${totHmo}h travail · ${totRoute}h route · ${totKm}km · ${deplCount} dépl.</span>
-        </div>
+        <div class="rapport-total"><span>TOTAL JOUR</span><span>${totHmo}h · ${totKm}km · ${deplCount} dépl.</span></div>
       </div>`;
     }).join('');
-  } catch(e) { el.innerHTML='<div class="empty-state">Erreur</div>'; }
+  } catch(e){el.innerHTML='<div class="empty-state">Erreur</div>';}
 }
 
-// CLIENTS — liste avec recherche
 async function chargerClients() {
-  const el = document.getElementById('liste-clients');
-  el.innerHTML = '<div class="empty-state">Chargement...</div>';
+  const el=document.getElementById('liste-clients');
+  el.innerHTML='<div class="empty-state">Chargement...</div>';
   try {
-    const clients = await sb('GET','clients',null,'?order=nom&select=id,nom,telephone,email,ville,code_postal,contact,siret,adresse');
-    tousLesClients = clients;
-    clientsCache = clients;
+    const clients=await sb('GET','clients',null,'?order=nom&select=id,nom,telephone,telephone2,email,ville,code_postal,contact,contact2,siret,adresse');
+    tousLesClients=clients; clientsCache=clients;
     renderListeClients(clients);
-  } catch(e) { el.innerHTML='<div class="empty-state">Erreur</div>'; }
+  } catch(e){el.innerHTML='<div class="empty-state">Erreur</div>';}
 }
 
 function filtrerListeClients() {
-  const val = document.getElementById('search-clients').value.toLowerCase().trim();
-  const filtres = val ? tousLesClients.filter(c => 
-    (c.nom||'').toLowerCase().includes(val) ||
-    (c.ville||'').toLowerCase().includes(val) ||
-    (c.telephone||'').includes(val)
-  ) : tousLesClients;
+  const val=document.getElementById('search-clients').value.toLowerCase().trim();
+  const filtres=val?tousLesClients.filter(c=>(c.nom||'').toLowerCase().includes(val)||(c.ville||'').toLowerCase().includes(val)||(c.telephone||'').includes(val)):tousLesClients;
   renderListeClients(filtres);
 }
 
 function renderListeClients(clients) {
-  const el = document.getElementById('liste-clients');
-  if (!clients.length) { el.innerHTML='<div class="empty-state">Aucun client trouvé</div>'; return; }
-  el.innerHTML = clients.map(c=>`
+  const el=document.getElementById('liste-clients');
+  if(!clients.length){el.innerHTML='<div class="empty-state">Aucun client trouvé</div>';return;}
+  el.innerHTML=clients.map(c=>`
     <div class="client-item">
       <div>
         <div class="client-name">${c.nom}</div>
-        <div class="client-sub">${[c.ville ? (c.code_postal ? c.code_postal+' '+c.ville : c.ville) : '', c.telephone, c.email].filter(Boolean).join(' · ')}</div>
+        <div class="client-sub">${[c.ville?(c.code_postal?c.code_postal+' '+c.ville:c.ville):'',c.telephone,c.email].filter(Boolean).join(' · ')}</div>
       </div>
       <button class="btn btn-sm btn-teal" onclick="editClient('${c.id}')">✏️</button>
     </div>`).join('');
@@ -903,32 +1121,55 @@ function ouvrirModalClient(client=null) {
   document.getElementById('mc-ville').value=client?.ville||'';
   document.getElementById('mc-contact').value=client?.contact||'';
   document.getElementById('mc-tel').value=client?.telephone||'';
+  document.getElementById('mc-contact2').value=client?.contact2||'';
+  document.getElementById('mc-tel2').value=client?.telephone2||'';
   document.getElementById('mc-email').value=client?.email||'';
   document.getElementById('mc-siret').value=client?.siret||'';
-  machinesModal=[];
-  renderMachinesModal();
+  machinesModal=[]; sitesModal=[];
+  renderMachinesModal(); renderSitesModal();
   document.getElementById('modal-client').style.display='block';
 }
 
 async function editClient(id) {
   try {
-    const r = await sb('GET','clients',null,`?id=eq.${id}`);
-    if (r.length) ouvrirModalClient(r[0]);
-    const m = await sb('GET','machines',null,`?client_id=eq.${id}&order=modele`);
-    machinesModal = m.map(x=>({...x,_new:false}));
-    renderMachinesModal();
-  } catch(e) { toast('Erreur'); }
+    const r=await sb('GET','clients',null,`?id=eq.${id}`);
+    if(r.length) ouvrirModalClient(r[0]);
+    const m=await sb('GET','machines',null,`?client_id=eq.${id}&order=modele`);
+    machinesModal=m.map(x=>({...x,_new:false})); renderMachinesModal();
+    const s=await sb('GET','sites',null,`?client_id=eq.${id}&order=nom`);
+    sitesModal=s.map(x=>({...x,_new:false})); renderSitesModal();
+  } catch(e){toast('Erreur');}
 }
 
-function fermerModal(id) { document.getElementById(id).style.display='none'; }
+function fermerModal(id){document.getElementById(id).style.display='none';}
 
-function ajouterMachineModal() {
-  machinesModal.push({_id:Date.now(),marque:'',modele:'',type_machine:'',numero_serie:'',_new:true});
-  renderMachinesModal();
+function ajouterSiteModal() {
+  sitesModal.push({_tmpid:Date.now(),nom:'',adresse:'',code_postal:'',ville:'',contact:'',telephone:'',_new:true});
+  renderSitesModal();
 }
-function renderMachinesModal() {
-  const el = document.getElementById('mc-machines');
-  el.innerHTML = machinesModal.map((m,i)=>`
+function renderSitesModal() {
+  const el=document.getElementById('mc-sites');
+  if(!sitesModal.length){el.innerHTML='<div style="font-size:12px;color:#aaa;padding:6px 0">Aucun site — cliquez + pour ajouter</div>';return;}
+  el.innerHTML=sitesModal.map((s,i)=>`
+    <div style="background:#f8f9fa;border-radius:8px;padding:10px;margin-bottom:8px;border-left:3px solid #E97300">
+      <div class="row2" style="margin-bottom:6px">
+        <div><label style="margin-top:0">Nom du site *</label><input type="text" placeholder="ex: Site Fos" value="${s.nom||''}" oninput="updateSM(${i},'nom',this.value)" style="font-size:12px;padding:7px"></div>
+        <div><label style="margin-top:0">Ville</label><input type="text" placeholder="Ville" value="${s.ville||''}" oninput="updateSM(${i},'ville',this.value)" style="font-size:12px;padding:7px"></div>
+      </div>
+      <div style="margin-bottom:6px"><label style="margin-top:0">Adresse</label><input type="text" placeholder="Rue..." value="${s.adresse||''}" oninput="updateSM(${i},'adresse',this.value)" style="font-size:12px;padding:7px"></div>
+      <div class="row2">
+        <div><label style="margin-top:0">Contact site</label><input type="text" placeholder="Nom contact" value="${s.contact||''}" oninput="updateSM(${i},'contact',this.value)" style="font-size:12px;padding:7px"></div>
+        <div><label style="margin-top:0">Tél. site</label><input type="text" placeholder="04..." value="${s.telephone||''}" oninput="updateSM(${i},'telephone',this.value)" style="font-size:12px;padding:7px"></div>
+      </div>
+      <button class="btn-del" onclick="suppSM(${i})" style="margin-top:6px;width:100%">🗑 Supprimer</button>
+    </div>`).join('');
+}
+function updateSM(i,f,v){if(sitesModal[i])sitesModal[i][f]=v;}
+function suppSM(i){sitesModal.splice(i,1);renderSitesModal();}
+
+function ajouterMachineModal(){machinesModal.push({_id:Date.now(),marque:'',modele:'',type_machine:'',numero_serie:'',_new:true});renderMachinesModal();}
+function renderMachinesModal(){
+  document.getElementById('mc-machines').innerHTML=machinesModal.map((m,i)=>`
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:5px;margin-bottom:6px;align-items:center">
       <input type="text" placeholder="Marque" value="${m.marque||''}" oninput="updateMM(${i},'marque',this.value)" style="font-size:12px;padding:7px">
       <input type="text" placeholder="Modèle" value="${m.modele||''}" oninput="updateMM(${i},'modele',this.value)" style="font-size:12px;padding:7px">
@@ -936,39 +1177,44 @@ function renderMachinesModal() {
       <button class="btn-del" onclick="suppMM(${i})">×</button>
     </div>`).join('');
 }
-function updateMM(i,f,v) { if(machinesModal[i]) machinesModal[i][f]=v; }
-function suppMM(i) { machinesModal.splice(i,1); renderMachinesModal(); }
+function updateMM(i,f,v){if(machinesModal[i])machinesModal[i][f]=v;}
+function suppMM(i){machinesModal.splice(i,1);renderMachinesModal();}
 
 async function sauvegarderClient() {
-  const nom = document.getElementById('mc-nom').value.trim();
-  if (!nom) { toast('⚠️ Nom requis'); return; }
-  const data = {
+  const nom=document.getElementById('mc-nom').value.trim();
+  if(!nom){toast('⚠️ Nom requis');return;}
+  const data={
     nom,
-    adresse: document.getElementById('mc-adresse').value,
-    code_postal: document.getElementById('mc-cp').value,
-    ville: document.getElementById('mc-ville').value,
-    contact: document.getElementById('mc-contact').value,
-    telephone: document.getElementById('mc-tel').value,
-    email: document.getElementById('mc-email').value,
-    siret: document.getElementById('mc-siret').value
+    adresse:document.getElementById('mc-adresse').value,
+    code_postal:document.getElementById('mc-cp').value,
+    ville:document.getElementById('mc-ville').value,
+    contact:document.getElementById('mc-contact').value,
+    telephone:document.getElementById('mc-tel').value,
+    contact2:document.getElementById('mc-contact2').value,
+    telephone2:document.getElementById('mc-tel2').value,
+    email:document.getElementById('mc-email').value,
+    siret:document.getElementById('mc-siret').value
   };
   try {
-    const cid = document.getElementById('mc-id').value;
+    const cid=document.getElementById('mc-id').value;
     let savedId;
-    if (cid) { await sb('PATCH','clients',data,`?id=eq.${cid}`); savedId=cid; }
-    else { const r=await sb('POST','clients',data); savedId=r[0]?.id; }
-    for (const m of machinesModal.filter(x=>x._new)) {
+    if(cid){await sb('PATCH','clients',data,`?id=eq.${cid}`);savedId=cid;}
+    else{const r=await sb('POST','clients',data);savedId=r[0]?.id;}
+    for(const s of sitesModal.filter(x=>x._new&&x.nom)){
+      await sb('POST','sites',{client_id:savedId,nom:s.nom,adresse:s.adresse||'',code_postal:s.code_postal||'',ville:s.ville||'',contact:s.contact||'',telephone:s.telephone||''});
+    }
+    for(const m of machinesModal.filter(x=>x._new)){
       await sb('POST','machines',{client_id:savedId,marque:m.marque||'',modele:m.modele||'',type_machine:m.type_machine||'',numero_serie:m.numero_serie||''});
     }
     toast('✅ Client sauvegardé');
     fermerModal('modal-client');
     chargerClients(); chargerClientsCache();
-  } catch(e) { toast('❌ '+e.message,4000); }
+  } catch(e){toast('❌ '+e.message,4000);}
 }
 
-window.onload = async () => {
+window.onload=async()=>{
   initSig();
-  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
   await chargerClientsCache();
   await genNumOT();
 };
