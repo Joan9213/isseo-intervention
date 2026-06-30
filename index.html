@@ -130,6 +130,7 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 }
 .suggestions div { padding: 9px 12px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f5f5f5; }
 .suggestions div:hover { background: #fff3e8; }
+.suggestions div small { color: #aaa; font-size: 11px; display: block; margin-top: 1px; }
 
 /* LISTE OT */
 .ot-item {
@@ -159,6 +160,14 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 }
 .client-name { font-weight: bold; font-size: 14px; }
 .client-sub { font-size: 12px; color: #888; margin-top: 2px; }
+
+/* SEARCH BAR CLIENTS */
+.search-clients {
+  width: 100%; border: 1px solid #ddd; border-radius: 8px;
+  padding: 10px 14px; font-size: 14px; margin-bottom: 12px;
+  background: white;
+}
+.search-clients:focus { outline: none; border-color: #E97300; }
 
 /* MODAL */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; padding: 16px; overflow-y: auto; }
@@ -238,7 +247,6 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
       <div class="machine-tab" onclick="switchMachineTab('new',this)">＋ Nouvelle machine</div>
     </div>
 
-    <!-- Machine existante -->
     <div id="machine-existing">
       <select id="f-machine" onchange="selectMachine()">
         <option value="">— Sélectionner une machine —</option>
@@ -250,7 +258,6 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
       </div>
     </div>
 
-    <!-- Nouvelle machine -->
     <div id="machine-new" style="display:none">
       <div class="row2">
         <div><label>Marque *</label><input type="text" id="fn-marque" placeholder="ex: Hangcha"></div>
@@ -397,6 +404,7 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 <!-- ======= PAGE CLIENTS ======= -->
 <div class="page" id="page-clients">
   <button class="btn btn-orange" onclick="ouvrirModalClient()" style="margin-bottom:12px">+ Nouveau client</button>
+  <input type="text" class="search-clients" id="search-clients" placeholder="🔍 Rechercher un client..." oninput="filtrerListeClients()">
   <div id="liste-clients"><div class="empty-state">Chargement...</div></div>
 </div>
 
@@ -406,10 +414,15 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
     <h3>👥 Client</h3>
     <input type="hidden" id="mc-id">
     <label>Nom *</label><input type="text" id="mc-nom" placeholder="Raison sociale">
-    <label>Adresse</label><input type="text" id="mc-adresse" placeholder="Adresse">
+    <label>Adresse</label><input type="text" id="mc-adresse" placeholder="Rue">
+    <div class="row2" style="margin-top:8px">
+      <div><label>Code postal</label><input type="text" id="mc-cp" placeholder="13000"></div>
+      <div><label>Ville</label><input type="text" id="mc-ville" placeholder="Arles"></div>
+    </div>
     <label>Contact</label><input type="text" id="mc-contact" placeholder="Nom du contact">
     <label>Téléphone</label><input type="text" id="mc-tel" placeholder="06...">
     <label>Email</label><input type="email" id="mc-email" placeholder="email@client.fr">
+    <label>SIRET</label><input type="text" id="mc-siret" placeholder="123 456 789 00000">
     <h4 style="margin-top:14px;margin-bottom:8px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Machines</h4>
     <div id="mc-machines"></div>
     <button class="btn btn-grey btn-sm" onclick="ajouterMachineModal()" style="margin-top:4px">+ Machine</button>
@@ -449,6 +462,7 @@ async function sb(method, table, data, filters='') {
 
 let mode = 'terrain';
 let clientsCache = [];
+let tousLesClients = [];
 let filtreActuel = 'tous';
 let machinesModal = [];
 let pieces = [];
@@ -506,7 +520,6 @@ function toggleDepl() {
   calculerTotal();
 }
 
-// MACHINE TABS
 function switchMachineTab(tab, el) {
   document.querySelectorAll('.machine-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
@@ -524,9 +537,7 @@ async function enregistrerNouvelleMachine() {
   if (!marque || !modele) { toast('⚠️ Marque et modèle requis'); return; }
   try {
     const r = await sb('POST','machines',{
-      client_id: clientId,
-      marque,
-      modele,
+      client_id: clientId, marque, modele,
       type_machine: document.getElementById('fn-type').value,
       numero_serie: document.getElementById('fn-serie').value
     });
@@ -574,21 +585,28 @@ function calculerTotal() {
   document.getElementById('total-box').style.display = (hmo||totalPieces||depl) ? 'block' : 'none';
 }
 
-// CLIENT AUTOCOMPLETE
+// CLIENT AUTOCOMPLETE — connecté à la base Odoo dans Supabase
 async function chargerClientsCache() {
-  try { clientsCache = await sb('GET','clients',null,'?order=nom'); } catch(e) { clientsCache=[]; }
+  try {
+    clientsCache = await sb('GET','clients',null,'?order=nom&select=id,nom,telephone,email,adresse,ville,code_postal,siret,contact');
+    tousLesClients = [...clientsCache];
+  } catch(e) { clientsCache=[]; tousLesClients=[]; }
 }
 
 function rechercherClient() {
-  const val = document.getElementById('f-client').value.toLowerCase();
+  const val = document.getElementById('f-client').value.toLowerCase().trim();
   const sugg = document.getElementById('client-sugg');
   if (val.length < 2) { sugg.style.display='none'; return; }
-  const m = clientsCache.filter(c => c.nom.toLowerCase().includes(val)).slice(0,8);
+  const m = clientsCache.filter(c => c.nom && c.nom.toLowerCase().includes(val)).slice(0,8);
   if (!m.length) { sugg.style.display='none'; return; }
-  sugg.innerHTML = m.map(c =>
-    `<div onclick="selectClient('${c.id}','${c.nom.replace(/'/g,"\\'")}')">
-      ${c.nom}${c.contact?' — '+c.contact:''}
-    </div>`).join('');
+  sugg.innerHTML = m.map(c => {
+    const ville = c.ville ? ` — ${c.ville}` : '';
+    const tel = c.telephone ? ` · ${c.telephone}` : '';
+    return `<div onclick="selectClient('${c.id}','${(c.nom||'').replace(/'/g,"\\'")}')">
+      <strong>${c.nom}</strong>${ville}
+      <small>${tel}</small>
+    </div>`;
+  }).join('');
   sugg.style.display = 'block';
 }
 
@@ -597,21 +615,23 @@ async function selectClient(id, nom) {
   document.getElementById('f-client-id').value = id;
   document.getElementById('client-sugg').style.display = 'none';
 
-  // Afficher infos client
+  // Afficher infos client enrichies avec nouveaux champs Odoo
   const c = clientsCache.find(x => x.id === id);
   if (c) {
     clientSelectionne = c;
+    const adresseLigne = [c.adresse, [c.code_postal, c.ville].filter(Boolean).join(' ')].filter(Boolean).join(', ');
     const box = document.getElementById('client-info-box');
     box.innerHTML = [
-      c.adresse ? `📍 ${c.adresse}` : '',
+      adresseLigne ? `📍 ${adresseLigne}` : '',
       c.contact ? `👤 ${c.contact}` : '',
       c.telephone ? `📞 ${c.telephone}` : '',
-      c.email ? `✉️ ${c.email}` : ''
+      c.email ? `✉️ ${c.email}` : '',
+      c.siret ? `🏢 SIRET : ${c.siret}` : ''
     ].filter(Boolean).join('<br>');
     box.style.display = 'block';
   }
 
-  // Charger machines
+  // Charger machines du client
   try {
     const machines = await sb('GET','machines',null,`?client_id=eq.${id}&order=modele`);
     const sel = document.getElementById('f-machine');
@@ -639,10 +659,7 @@ async function sauvegarder(statut) {
   const isNewMachine = document.getElementById('machine-new').style.display !== 'none';
   const deplCheck = document.getElementById('f-depl-check').checked;
 
-  let machineLabel = '';
-  let machineId = null;
-  let serie = '';
-  let horametre = null;
+  let machineLabel = '', machineId = null, serie = '', horametre = null;
 
   if (isNewMachine) {
     machineLabel = `${document.getElementById('fn-marque').value} ${document.getElementById('fn-modele').value}`.trim();
@@ -664,10 +681,8 @@ async function sauvegarder(statut) {
     technicien: tech,
     client: document.getElementById('f-client').value,
     client_id: document.getElementById('f-client-id').value||null,
-    machine: machineLabel,
-    machine_id: machineId,
-    numero_serie: serie,
-    horametre,
+    machine: machineLabel, machine_id: machineId,
+    numero_serie: serie, horametre,
     type_intervention: document.getElementById('f-type').value,
     description: document.getElementById('f-desc').value,
     pieces_utilisees: pieces.length ? pieces : null,
@@ -787,23 +802,17 @@ async function ouvrirOT(id) {
     actions.innerHTML = '';
     if (o.statut !== 'cloture') {
       const b1 = document.createElement('button');
-      b1.className='btn btn-orange btn-sm';
-      b1.textContent='✅ Clôturer';
-      b1.onclick=()=>changerStatut(id,'cloture');
-      actions.appendChild(b1);
+      b1.className='btn btn-orange btn-sm'; b1.textContent='✅ Clôturer';
+      b1.onclick=()=>changerStatut(id,'cloture'); actions.appendChild(b1);
     }
     if (o.statut === 'brouillon' || o.statut === 'transmis') {
       const b2 = document.createElement('button');
-      b2.className='btn btn-blue btn-sm';
-      b2.textContent='🔄 En cours';
-      b2.onclick=()=>changerStatut(id,'en_cours');
-      actions.appendChild(b2);
+      b2.className='btn btn-blue btn-sm'; b2.textContent='🔄 En cours';
+      b2.onclick=()=>changerStatut(id,'en_cours'); actions.appendChild(b2);
     }
     const bF = document.createElement('button');
-    bF.className='btn btn-grey btn-sm';
-    bF.textContent='Fermer';
-    bF.onclick=()=>fermerModal('modal-ot');
-    actions.appendChild(bF);
+    bF.className='btn btn-grey btn-sm'; bF.textContent='Fermer';
+    bF.onclick=()=>fermerModal('modal-ot'); actions.appendChild(bF);
 
     document.getElementById('modal-ot').style.display='block';
   } catch(e) { toast('Erreur chargement OT'); }
@@ -851,32 +860,51 @@ async function chargerRapport() {
   } catch(e) { el.innerHTML='<div class="empty-state">Erreur</div>'; }
 }
 
-// CLIENTS
+// CLIENTS — liste avec recherche
 async function chargerClients() {
   const el = document.getElementById('liste-clients');
   el.innerHTML = '<div class="empty-state">Chargement...</div>';
   try {
-    const clients = await sb('GET','clients',null,'?order=nom');
-    if (!clients.length) { el.innerHTML='<div class="empty-state">Aucun client</div>'; return; }
-    el.innerHTML = clients.map(c=>`
-      <div class="client-item">
-        <div>
-          <div class="client-name">${c.nom}</div>
-          <div class="client-sub">${[c.contact,c.telephone,c.email].filter(Boolean).join(' · ')}</div>
-        </div>
-        <button class="btn btn-sm btn-teal" onclick="editClient('${c.id}')">✏️</button>
-      </div>`).join('');
+    const clients = await sb('GET','clients',null,'?order=nom&select=id,nom,telephone,email,ville,code_postal,contact,siret,adresse');
+    tousLesClients = clients;
     clientsCache = clients;
+    renderListeClients(clients);
   } catch(e) { el.innerHTML='<div class="empty-state">Erreur</div>'; }
+}
+
+function filtrerListeClients() {
+  const val = document.getElementById('search-clients').value.toLowerCase().trim();
+  const filtres = val ? tousLesClients.filter(c => 
+    (c.nom||'').toLowerCase().includes(val) ||
+    (c.ville||'').toLowerCase().includes(val) ||
+    (c.telephone||'').includes(val)
+  ) : tousLesClients;
+  renderListeClients(filtres);
+}
+
+function renderListeClients(clients) {
+  const el = document.getElementById('liste-clients');
+  if (!clients.length) { el.innerHTML='<div class="empty-state">Aucun client trouvé</div>'; return; }
+  el.innerHTML = clients.map(c=>`
+    <div class="client-item">
+      <div>
+        <div class="client-name">${c.nom}</div>
+        <div class="client-sub">${[c.ville ? (c.code_postal ? c.code_postal+' '+c.ville : c.ville) : '', c.telephone, c.email].filter(Boolean).join(' · ')}</div>
+      </div>
+      <button class="btn btn-sm btn-teal" onclick="editClient('${c.id}')">✏️</button>
+    </div>`).join('');
 }
 
 function ouvrirModalClient(client=null) {
   document.getElementById('mc-id').value=client?.id||'';
   document.getElementById('mc-nom').value=client?.nom||'';
   document.getElementById('mc-adresse').value=client?.adresse||'';
+  document.getElementById('mc-cp').value=client?.code_postal||'';
+  document.getElementById('mc-ville').value=client?.ville||'';
   document.getElementById('mc-contact').value=client?.contact||'';
   document.getElementById('mc-tel').value=client?.telephone||'';
   document.getElementById('mc-email').value=client?.email||'';
+  document.getElementById('mc-siret').value=client?.siret||'';
   machinesModal=[];
   renderMachinesModal();
   document.getElementById('modal-client').style.display='block';
@@ -917,9 +945,12 @@ async function sauvegarderClient() {
   const data = {
     nom,
     adresse: document.getElementById('mc-adresse').value,
+    code_postal: document.getElementById('mc-cp').value,
+    ville: document.getElementById('mc-ville').value,
     contact: document.getElementById('mc-contact').value,
     telephone: document.getElementById('mc-tel').value,
-    email: document.getElementById('mc-email').value
+    email: document.getElementById('mc-email').value,
+    siret: document.getElementById('mc-siret').value
   };
   try {
     const cid = document.getElementById('mc-id').value;
