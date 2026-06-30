@@ -530,38 +530,57 @@ let activeRecognition = null;
 
 // ====== VOICE ======
 function startVoice(fieldId, btnId) {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    toast('❌ Dictée vocale non supportée sur ce navigateur', 3000);
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    toast('❌ Dictée non supportée — utilisez Chrome', 3000);
     return;
   }
   const btn = document.getElementById(btnId);
+  const field = document.getElementById(fieldId);
+
   if (activeRecognition) {
     activeRecognition.stop();
-    activeRecognition = null;
-    btn.classList.remove('recording');
-    btn.textContent = '🎤';
     return;
   }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
   const r = new SR();
   r.lang = 'fr-FR';
-  r.continuous = true;
+  r.continuous = false;
   r.interimResults = false;
+  r.maxAlternatives = 1;
   activeRecognition = r;
+
   btn.classList.add('recording');
   btn.textContent = '⏹';
-  r.onresult = e => {
-    const field = document.getElementById(fieldId);
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) {
-        field.value += (field.value ? ' ' : '') + e.results[i][0].transcript;
-      }
-    }
+  toast('🎤 Parlez maintenant...');
+
+  r.onresult = function(e) {
+    const transcript = e.results[0][0].transcript;
+    field.value = field.value ? field.value + ' ' + transcript : transcript;
+    toast('✅ Dictée enregistrée');
   };
-  r.onerror = () => { btn.classList.remove('recording'); btn.textContent = '🎤'; activeRecognition = null; };
-  r.onend = () => { btn.classList.remove('recording'); btn.textContent = '🎤'; activeRecognition = null; };
-  r.start();
-  toast('🎤 Dictée en cours... Appuyez à nouveau pour arrêter');
+
+  r.onerror = function(e) {
+    toast('❌ Erreur micro : ' + e.error, 3000);
+    btn.classList.remove('recording');
+    btn.textContent = '🎤';
+    activeRecognition = null;
+  };
+
+  r.onend = function() {
+    btn.classList.remove('recording');
+    btn.textContent = '🎤';
+    activeRecognition = null;
+  };
+
+  try {
+    r.start();
+  } catch(e) {
+    toast('❌ Impossible de démarrer le micro', 3000);
+    btn.classList.remove('recording');
+    btn.textContent = '🎤';
+    activeRecognition = null;
+  }
 }
 
 // ====== PDF ======
