@@ -10,17 +10,15 @@
 body { font-family: Arial, sans-serif; background: #f0f0f0; color: #333; min-height: 100vh; }
 
 header {
-  background: #E97300;
-  padding: 12px 16px;
+  background: #E97300; padding: 12px 16px;
   display: flex; align-items: center; justify-content: space-between;
   position: sticky; top: 0; z-index: 100;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 header h1 { color: white; font-size: 15px; font-weight: bold; }
 .mode-badge {
-  background: rgba(255,255,255,0.25);
-  color: white; padding: 4px 10px;
-  border-radius: 20px; font-size: 12px; cursor: pointer;
+  background: rgba(255,255,255,0.25); color: white;
+  padding: 4px 10px; border-radius: 20px; font-size: 12px; cursor: pointer;
 }
 .mode-badge.bureau { background: #41B5A3; }
 
@@ -34,36 +32,31 @@ nav button.active { color: white; border-bottom-color: #E97300; }
 
 .bureau-bar {
   background: #41B5A3; color: white;
-  text-align: center; padding: 6px; font-size: 12px; font-weight: bold;
-  display: none;
+  text-align: center; padding: 6px; font-size: 12px; font-weight: bold; display: none;
 }
 
 .page { display: none; padding: 14px; max-width: 720px; margin: 0 auto; }
 .page.active { display: block; }
 
 .card {
-  background: white; border-radius: 10px;
-  padding: 14px; margin-bottom: 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  background: white; border-radius: 10px; padding: 14px;
+  margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 .card h3 {
-  font-size: 12px; color: #E97300;
-  text-transform: uppercase; letter-spacing: 1px;
-  margin-bottom: 10px; padding-bottom: 6px;
+  font-size: 12px; color: #E97300; text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 10px; padding-bottom: 6px;
   border-bottom: 1px solid #f0f0f0;
 }
 
 label { font-size: 12px; color: #666; display: block; margin-bottom: 3px; margin-top: 8px; }
 label:first-child { margin-top: 0; }
-input, select, textarea {
+input[type=text], input[type=date], input[type=number], input[type=email], select, textarea {
   width: 100%; border: 1px solid #ddd; border-radius: 6px;
   padding: 9px 10px; font-size: 14px; font-family: Arial, sans-serif;
   background: #fafafa; color: #333;
 }
-input:focus, select:focus, textarea:focus {
-  outline: none; border-color: #E97300; background: white;
-}
-textarea { resize: vertical; min-height: 75px; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: #E97300; background: white; }
+textarea { resize: vertical; min-height: 70px; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 
@@ -77,23 +70,22 @@ textarea { resize: vertical; min-height: 75px; }
 .btn-teal { background: #41B5A3; color: white; }
 .btn-grey { background: #666; color: white; }
 .btn-green { background: #8CC52A; color: white; }
+.btn-blue { background: #2980b9; color: white; }
 .btn-sm { padding: 6px 12px; font-size: 12px; width: auto; margin-top: 0; }
 
+/* STATUT BADGE */
+.badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+.badge-brouillon { background: #fef3cd; color: #856404; }
+.badge-en_cours { background: #cce5ff; color: #004085; }
+.badge-transmis { background: #d1f2eb; color: #0e6655; }
+.badge-cloture { background: #d5f5e3; color: #1e8449; }
+
 /* PIECES */
-.piece-header {
-  display: grid; grid-template-columns: 90px 1fr 60px 70px 30px;
-  gap: 5px; margin-bottom: 4px;
-}
+.piece-header { display: grid; grid-template-columns: 80px 1fr 55px 65px 28px; gap: 5px; margin-bottom: 4px; }
 .piece-header span { font-size: 11px; color: #999; }
-.piece-row {
-  display: grid; grid-template-columns: 90px 1fr 60px 70px 30px;
-  gap: 5px; align-items: center; margin-bottom: 5px;
-}
+.piece-row { display: grid; grid-template-columns: 80px 1fr 55px 65px 28px; gap: 5px; align-items: center; margin-bottom: 5px; }
 .piece-row input { font-size: 12px; padding: 7px 6px; }
-.btn-del {
-  background: #e74c3c; color: white; border: none;
-  border-radius: 6px; padding: 7px 8px; cursor: pointer; font-size: 13px;
-}
+.btn-del { background: #e74c3c; color: white; border: none; border-radius: 6px; padding: 7px 8px; cursor: pointer; font-size: 13px; }
 
 /* SIGNATURES */
 .sig-wrap { border: 2px solid #ddd; border-radius: 8px; background: white; overflow: hidden; margin-top: 6px; }
@@ -101,27 +93,29 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 .sig-actions { padding: 5px 8px; }
 
 /* TOTAUX */
-.total-box {
-  background: #f8f9fa; border: 1px solid #e0e0e0;
-  border-radius: 8px; padding: 10px 12px; margin-top: 10px;
-}
+.total-box { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
 .total-line { display: flex; justify-content: space-between; font-size: 13px; padding: 2px 0; }
-.total-line.grand {
-  font-weight: bold; font-size: 15px;
-  border-top: 1px solid #ddd; margin-top: 6px; padding-top: 6px; color: #E97300;
-}
+.total-line.grand { font-weight: bold; font-size: 15px; border-top: 1px solid #ddd; margin-top: 6px; padding-top: 6px; color: #E97300; }
 
-/* TAUX OPTION */
 .taux-toggle { font-size: 12px; color: #41B5A3; cursor: pointer; margin-top: 6px; display: inline-block; }
 .taux-hidden { display: none; }
+
+/* CHECKBOX DEPL */
+.depl-check { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; }
+.depl-check input[type=checkbox] { width: 20px; height: 20px; cursor: pointer; accent-color: #E97300; }
+.depl-check label { font-size: 14px; font-weight: bold; color: #333; margin: 0; cursor: pointer; }
+
+/* JOURS */
+.jour-item { background: #f8f9fa; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; border-left: 3px solid #41B5A3; }
+.jour-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
+.jour-detail { font-size: 12px; color: #666; }
 
 /* AUTOCOMPLETE */
 .ac-wrap { position: relative; }
 .suggestions {
   position: absolute; top: 100%; left: 0; right: 0;
-  background: white; border: 1px solid #ddd;
-  border-radius: 0 0 8px 8px; z-index: 50;
-  max-height: 180px; overflow-y: auto; display: none;
+  background: white; border: 1px solid #ddd; border-radius: 0 0 8px 8px;
+  z-index: 50; max-height: 180px; overflow-y: auto; display: none;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 .suggestions div { padding: 9px 12px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f5f5f5; }
@@ -130,29 +124,22 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 /* LISTE OT */
 .ot-item {
   background: white; border-radius: 10px; padding: 12px 14px;
-  margin-bottom: 8px; cursor: pointer;
-  border-left: 4px solid #ddd;
+  margin-bottom: 8px; cursor: pointer; border-left: 4px solid #ddd;
   box-shadow: 0 1px 3px rgba(0,0,0,0.07);
 }
 .ot-item.brouillon { border-left-color: #f39c12; }
+.ot-item.en_cours { border-left-color: #2980b9; }
 .ot-item.transmis { border-left-color: #41B5A3; }
 .ot-item.cloture { border-left-color: #8CC52A; }
 .ot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
 .ot-num { font-weight: bold; font-size: 14px; }
-.badge { padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
-.badge-brouillon { background: #fef3cd; color: #856404; }
-.badge-transmis { background: #d1f2eb; color: #0e6655; }
-.badge-cloture { background: #d5f5e3; color: #1e8449; }
 .ot-info { font-size: 12px; color: #777; }
 
-/* RAPPORT JOURNALIER */
-.rapport-tech {
-  background: white; border-radius: 10px; padding: 14px;
-  margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}
+/* RAPPORT */
+.rapport-tech { background: white; border-radius: 10px; padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .rapport-tech h4 { color: #E97300; font-size: 14px; margin-bottom: 10px; }
-.rapport-line { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f5f5f5; }
-.rapport-total { font-weight: bold; color: #41B5A3; margin-top: 6px; font-size: 13px; display: flex; justify-content: space-between; }
+.rapport-line { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid #f5f5f5; }
+.rapport-total { font-weight: bold; color: #41B5A3; margin-top: 8px; font-size: 13px; display: flex; justify-content: space-between; }
 
 /* CLIENTS */
 .client-item {
@@ -164,25 +151,15 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 .client-info { font-size: 12px; color: #888; margin-top: 2px; }
 
 /* MODAL */
-.modal-bg {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.5); z-index: 200;
-  padding: 16px; overflow-y: auto;
-}
-.modal-box {
-  background: white; border-radius: 12px; padding: 18px;
-  max-width: 520px; margin: 30px auto;
-}
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; padding: 16px; overflow-y: auto; }
+.modal-box { background: white; border-radius: 12px; padding: 18px; max-width: 520px; margin: 30px auto; }
 .modal-box h3 { color: #E97300; margin-bottom: 14px; font-size: 16px; }
 
 /* TOAST */
 #toast {
-  position: fixed; bottom: 20px; left: 50%;
-  transform: translateX(-50%);
-  background: #2a2a2a; color: white;
-  padding: 10px 20px; border-radius: 20px;
-  font-size: 13px; z-index: 999;
-  opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: #2a2a2a; color: white; padding: 10px 20px; border-radius: 20px;
+  font-size: 13px; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none;
 }
 #toast.show { opacity: 1; }
 
@@ -192,12 +169,11 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 .filter-btn.active { background: #E97300; color: white; border-color: #E97300; }
 
 @media (max-width: 420px) {
-  .piece-header, .piece-row { grid-template-columns: 70px 1fr 50px 60px 28px; }
+  .piece-header, .piece-row { grid-template-columns: 65px 1fr 45px 58px 26px; }
 }
 </style>
 </head>
 <body>
-
 <div id="toast"></div>
 
 <header>
@@ -207,10 +183,10 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 <div class="bureau-bar" id="bureau-bar">🖥 MODE BUREAU — Création & suivi OT</div>
 
 <nav>
-  <button class="active" onclick="showPage('page-nouveau', this)">＋ Nouveau</button>
-  <button onclick="showPage('page-liste', this)">📋 Mes OT</button>
-  <button onclick="showPage('page-rapport', this)" id="nav-rapport" style="display:none">📊 Rapport</button>
-  <button onclick="showPage('page-clients', this)" id="nav-clients" style="display:none">👥 Clients</button>
+  <button class="active" onclick="showPage('page-nouveau',this)">＋ Nouveau</button>
+  <button onclick="showPage('page-liste',this)">📋 Mes OT</button>
+  <button onclick="showPage('page-rapport',this)" id="nav-rapport" style="display:none">📊 Rapport</button>
+  <button onclick="showPage('page-clients',this)" id="nav-clients" style="display:none">👥 Clients</button>
 </nav>
 
 <!-- ======= PAGE NOUVEAU ======= -->
@@ -219,20 +195,11 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
   <div class="card">
     <h3>Identification</h3>
     <div class="row2">
-      <div>
-        <label>N° OT *</label>
-        <input type="text" id="f-ot" placeholder="OT-2026-001">
-      </div>
-      <div>
-        <label>N° Devis / Cde client</label>
-        <input type="text" id="f-devis" placeholder="DEV-...">
-      </div>
+      <div><label>N° OT *</label><input type="text" id="f-ot" placeholder="OT-2026-001"></div>
+      <div><label>N° Devis / Cde client</label><input type="text" id="f-devis" placeholder="DEV-..."></div>
     </div>
     <div class="row2">
-      <div>
-        <label>Date *</label>
-        <input type="date" id="f-date">
-      </div>
+      <div><label>Date *</label><input type="date" id="f-date"></div>
       <div>
         <label>Technicien *</label>
         <select id="f-tech">
@@ -260,7 +227,7 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
     <input type="hidden" id="f-machine-id">
     <div class="row2">
       <div><label>N° Série</label><input type="text" id="f-serie" placeholder="N° série"></div>
-      <div><label>Modèle</label><input type="text" id="f-modele" placeholder="Modèle"></div>
+      <div><label>Horamètre</label><input type="number" id="f-horametre" placeholder="ex: 1250" min="0"></div>
     </div>
   </div>
 
@@ -292,7 +259,7 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
     </div>
     <div id="pieces-list"></div>
     <button class="btn btn-grey btn-sm" onclick="ajouterPiece()">+ Ajouter une pièce</button>
-    <div id="total-pieces-line" style="display:none; text-align:right; margin-top:8px; font-size:13px; color:#666;">
+    <div id="total-pieces-line" style="display:none;text-align:right;margin-top:8px;font-size:13px;color:#666;">
       Total pièces : <strong id="total-pieces-val">0,00 €</strong>
     </div>
   </div>
@@ -300,13 +267,9 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
   <div class="card">
     <h3>Main d'œuvre</h3>
     <div class="row2">
-      <div>
-        <label>Heures travaillées</label>
-        <input type="number" id="f-hmo" placeholder="0" step="0.25" min="0" oninput="calculerTotal()">
-      </div>
+      <div><label>Heures travaillées</label><input type="number" id="f-hmo" placeholder="0" step="0.25" min="0" oninput="calculerTotal()"></div>
       <div id="taux-mo-wrap" class="taux-hidden">
-        <label>Taux horaire (€/h)</label>
-        <input type="number" id="f-tmo" value="75" step="1" oninput="calculerTotal()">
+        <label>Taux horaire (€/h)</label><input type="number" id="f-tmo" value="75" step="1" oninput="calculerTotal()">
       </div>
     </div>
     <span class="taux-toggle" onclick="toggleTaux()">⚙️ Personnaliser le taux horaire</span>
@@ -314,20 +277,20 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 
   <div class="card">
     <h3>Déplacement</h3>
-    <div class="row2">
-      <div>
-        <label>Heures de route</label>
-        <input type="number" id="f-hroute" placeholder="0" step="0.25" min="0" oninput="calculerTotal()">
-      </div>
-      <div>
-        <label>Kilomètres</label>
-        <input type="number" id="f-km" placeholder="0" min="0" oninput="calculerTotal()">
+    <div class="depl-check">
+      <input type="checkbox" id="f-depl-check" onchange="toggleDepl()">
+      <label for="f-depl-check">Déplacement effectué ce jour</label>
+    </div>
+    <div id="depl-detail" style="display:none">
+      <div class="row2">
+        <div><label>Heures de route</label><input type="number" id="f-hroute" placeholder="0" step="0.25" min="0" oninput="calculerTotal()"></div>
+        <div><label>Kilomètres</label><input type="number" id="f-km" placeholder="0" min="0" oninput="calculerTotal()"></div>
       </div>
     </div>
     <div class="total-box" id="total-box" style="display:none">
       <div class="total-line"><span>Main d'œuvre</span><span id="t-mo">0,00 €</span></div>
       <div class="total-line"><span>Pièces</span><span id="t-pieces">0,00 €</span></div>
-      <div class="total-line"><span>Déplacement</span><span>1 forfait</span></div>
+      <div class="total-line" id="t-depl-line" style="display:none"><span>Déplacement</span><span>1 forfait</span></div>
       <div class="total-line grand"><span>TOTAL HT</span><span id="t-ht">0,00 €</span></div>
     </div>
   </div>
@@ -345,6 +308,7 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
   </div>
 
   <button class="btn btn-grey" onclick="sauvegarder('brouillon')">💾 Brouillon</button>
+  <button class="btn btn-blue" onclick="sauvegarder('en_cours')">🔄 Enregistrer — En cours</button>
   <button class="btn btn-teal" id="btn-transmettre" style="display:none" onclick="sauvegarder('transmis')">📤 Transmettre au technicien</button>
   <button class="btn btn-orange" onclick="sauvegarder('cloture')">✅ Clôturer & Envoyer</button>
   <div style="height:24px"></div>
@@ -355,6 +319,7 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
   <div class="filter-btns">
     <button class="filter-btn active" onclick="filtrer('tous',this)">Tous</button>
     <button class="filter-btn" onclick="filtrer('brouillon',this)">Brouillons</button>
+    <button class="filter-btn" onclick="filtrer('en_cours',this)">En cours</button>
     <button class="filter-btn" onclick="filtrer('transmis',this)">Transmis</button>
     <button class="filter-btn" onclick="filtrer('cloture',this)">Clôturés</button>
   </div>
@@ -363,13 +328,10 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
 
 <!-- ======= PAGE RAPPORT ======= -->
 <div class="page" id="page-rapport">
-  <div class="card" style="margin-bottom:12px">
+  <div class="card">
     <h3>Rapport journalier</h3>
     <div class="row2">
-      <div>
-        <label>Date</label>
-        <input type="date" id="rapport-date" onchange="chargerRapport()">
-      </div>
+      <div><label>Date</label><input type="date" id="rapport-date" onchange="chargerRapport()"></div>
       <div>
         <label>Technicien</label>
         <select id="rapport-tech" onchange="chargerRapport()">
@@ -410,8 +372,16 @@ canvas { width: 100% !important; height: 150px; display: block; background: whit
   </div>
 </div>
 
+<!-- MODAL OT DETAIL -->
+<div class="modal-bg" id="modal-ot">
+  <div class="modal-box" style="max-width:600px">
+    <h3 id="modal-ot-titre">Détail OT</h3>
+    <div id="modal-ot-content"></div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap" id="modal-ot-actions"></div>
+  </div>
+</div>
+
 <script>
-// ===== SUPABASE =====
 const SB_URL = 'https://svcaftiobsuihzlzuiup.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2Y2FmdGlvYnN1aWh6bHp1aXVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NDAwMzksImV4cCI6MjA5ODMxNjAzOX0.mhDwihGon9ByUR-aEU1O0ImnaRHBWMOBqG0Oc6sE4Zg';
 
@@ -419,10 +389,8 @@ async function sb(method, table, data, filters='') {
   const res = await fetch(`${SB_URL}/rest/v1/${table}${filters}`, {
     method,
     headers: {
-      'apikey': SB_KEY,
-      'Authorization': `Bearer ${SB_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=representation'
+      'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json', 'Prefer': 'return=representation'
     },
     body: data ? JSON.stringify(data) : undefined
   });
@@ -431,7 +399,6 @@ async function sb(method, table, data, filters='') {
   return t ? JSON.parse(t) : [];
 }
 
-// ===== MODE =====
 let mode = 'terrain';
 let clientsCache = [];
 let filtreActuel = 'tous';
@@ -441,9 +408,9 @@ let sigTech, sigClient;
 
 function toggleMode() {
   mode = mode === 'terrain' ? 'bureau' : 'terrain';
-  const badge = document.getElementById('mode-badge');
-  badge.textContent = mode === 'bureau' ? '🖥 Bureau' : '👤 Terrain';
-  badge.className = 'mode-badge' + (mode === 'bureau' ? ' bureau' : '');
+  const b = document.getElementById('mode-badge');
+  b.textContent = mode === 'bureau' ? '🖥 Bureau' : '👤 Terrain';
+  b.className = 'mode-badge' + (mode === 'bureau' ? ' bureau' : '');
   document.getElementById('bureau-bar').style.display = mode === 'bureau' ? 'block' : 'none';
   document.getElementById('nav-clients').style.display = mode === 'bureau' ? 'inline-block' : 'none';
   document.getElementById('nav-rapport').style.display = mode === 'bureau' ? 'inline-block' : 'none';
@@ -451,7 +418,6 @@ function toggleMode() {
   toast(mode === 'bureau' ? '🖥 Mode Bureau' : '👤 Mode Terrain');
 }
 
-// ===== NAV =====
 function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -465,14 +431,12 @@ function showPage(id, btn) {
   }
 }
 
-// ===== TOAST =====
 function toast(msg, d=2500) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), d);
 }
 
-// ===== SIGNATURES =====
 function initSig() {
   ['sig-tech','sig-client'].forEach(id => {
     const c = document.getElementById(id);
@@ -483,13 +447,18 @@ function initSig() {
   sigClient = new SignaturePad(document.getElementById('sig-client'), { penColor: '#111' });
 }
 
-// ===== TAUX =====
 function toggleTaux() {
-  const w = document.getElementById('taux-mo-wrap');
-  w.classList.toggle('taux-hidden');
+  document.getElementById('taux-mo-wrap').classList.toggle('taux-hidden');
 }
 
-// ===== PIECES =====
+function toggleDepl() {
+  const checked = document.getElementById('f-depl-check').checked;
+  document.getElementById('depl-detail').style.display = checked ? 'block' : 'none';
+  document.getElementById('t-depl-line').style.display = checked ? 'flex' : 'none';
+  calculerTotal();
+}
+
+// PIECES
 function ajouterPiece() {
   pieces.push({ id: Date.now(), ref: '', designation: '', qte: 1, pu: 0 });
   renderPieces();
@@ -500,7 +469,7 @@ function supprimerPiece(id) {
 }
 function updatePiece(id, f, v) {
   const p = pieces.find(p => p.id === id);
-  if (p) p[f] = (f === 'qte' || f === 'pu') ? parseFloat(v)||0 : v;
+  if (p) p[f] = (f==='qte'||f==='pu') ? parseFloat(v)||0 : v;
   calculerTotal();
 }
 function renderPieces() {
@@ -513,27 +482,27 @@ function renderPieces() {
       <input type="number" placeholder="0.00" value="${p.pu||''}" step="0.01" oninput="updatePiece(${p.id},'pu',this.value)">
       <button class="btn-del" onclick="supprimerPiece(${p.id})">×</button>
     </div>`).join('');
-  const total = pieces.reduce((s,p) => s + p.qte*p.pu, 0);
+  const total = pieces.reduce((s,p) => s+p.qte*p.pu, 0);
   document.getElementById('total-pieces-line').style.display = pieces.length ? 'block' : 'none';
-  document.getElementById('total-pieces-val').textContent = total.toFixed(2) + ' €';
+  document.getElementById('total-pieces-val').textContent = total.toFixed(2)+' €';
 }
 
-// ===== TOTAUX =====
 function calculerTotal() {
   const hmo = parseFloat(document.getElementById('f-hmo').value)||0;
   const tmo = parseFloat(document.getElementById('f-tmo').value)||75;
   const totalMO = hmo * tmo;
-  const totalPieces = pieces.reduce((s,p) => s + p.qte*p.pu, 0);
+  const totalPieces = pieces.reduce((s,p) => s+p.qte*p.pu, 0);
   const totalHT = totalMO + totalPieces;
   document.getElementById('t-mo').textContent = totalMO.toFixed(2)+' €';
   document.getElementById('t-pieces').textContent = totalPieces.toFixed(2)+' €';
   document.getElementById('t-ht').textContent = totalHT.toFixed(2)+' €';
+  const depl = document.getElementById('f-depl-check').checked;
   const hroute = parseFloat(document.getElementById('f-hroute').value)||0;
   const km = parseFloat(document.getElementById('f-km').value)||0;
-  document.getElementById('total-box').style.display = (hmo||totalPieces||hroute||km) ? 'block' : 'none';
+  document.getElementById('total-box').style.display = (hmo||totalPieces||depl) ? 'block' : 'none';
 }
 
-// ===== AUTOCOMPLETE CLIENT =====
+// AUTOCOMPLETE
 async function chargerClientsCache() {
   try { clientsCache = await sb('GET','clients',null,'?order=nom'); } catch(e) { clientsCache=[]; }
 }
@@ -543,9 +512,10 @@ function rechercherClient() {
   if (val.length < 2) { sugg.style.display='none'; return; }
   const m = clientsCache.filter(c => c.nom.toLowerCase().includes(val)).slice(0,8);
   if (!m.length) { sugg.style.display='none'; return; }
-  sugg.innerHTML = m.map(c => `<div onclick="selectClient('${c.id}','${c.nom.replace(/'/g,"\\'")}')">
-    ${c.nom}${c.contact?' — '+c.contact:''}
-  </div>`).join('');
+  sugg.innerHTML = m.map(c =>
+    `<div onclick="selectClient('${c.id}','${c.nom.replace(/'/g,"\\'")}')">
+      ${c.nom}${c.contact?' — '+c.contact:''}
+    </div>`).join('');
   sugg.style.display = 'block';
 }
 async function selectClient(id, nom) {
@@ -556,7 +526,7 @@ async function selectClient(id, nom) {
     const machines = await sb('GET','machines',null,`?client_id=eq.${id}&order=modele`);
     const sel = document.getElementById('f-machine');
     sel.innerHTML = '<option value="">— Sélectionner une machine —</option>' +
-      machines.map(m => `<option value="${m.id}" data-serie="${m.numero_serie||''}" data-modele="${m.modele||''}">${m.marque||''} ${m.modele||''} — ${m.numero_serie||'sans N°'}</option>`).join('');
+      machines.map(m => `<option value="${m.id}" data-serie="${m.numero_serie||''}" data-modele="${m.modele||''}" data-marque="${m.marque||''}">${m.marque||''} ${m.modele||''} — ${m.numero_serie||'sans N°'}</option>`).join('');
   } catch(e) {}
 }
 function selectMachine() {
@@ -565,11 +535,10 @@ function selectMachine() {
   document.getElementById('f-machine-id').value = sel.value;
   if (sel.value) {
     document.getElementById('f-serie').value = opt.dataset.serie||'';
-    document.getElementById('f-modele').value = opt.dataset.modele||'';
   }
 }
 
-// ===== SAUVEGARDER OT =====
+// SAUVEGARDER
 async function sauvegarder(statut) {
   const ot = document.getElementById('f-ot').value.trim();
   const date = document.getElementById('f-date').value;
@@ -578,22 +547,26 @@ async function sauvegarder(statut) {
   if (!date) { toast('⚠️ Date requise'); return; }
   if (!tech) { toast('⚠️ Technicien requis'); return; }
 
+  const deplCheck = document.getElementById('f-depl-check').checked;
+
   const data = {
     numero_ot: ot,
     date_intervention: date,
     technicien: tech,
     client: document.getElementById('f-client').value,
     client_id: document.getElementById('f-client-id').value||null,
-    machine: document.getElementById('f-modele').value,
+    machine: document.getElementById('f-machine').options[document.getElementById('f-machine').selectedIndex]?.text||'',
     machine_id: document.getElementById('f-machine-id').value||null,
     numero_serie: document.getElementById('f-serie').value,
+    horametre: parseFloat(document.getElementById('f-horametre').value)||null,
     type_intervention: document.getElementById('f-type').value,
     description: document.getElementById('f-desc').value,
     pieces_utilisees: pieces.length ? pieces : null,
     heures_mo: parseFloat(document.getElementById('f-hmo').value)||0,
     taux_mo: parseFloat(document.getElementById('f-tmo').value)||75,
-    km_deplacement: parseFloat(document.getElementById('f-km').value)||0,
-    temps_deplacement_centieme: parseFloat(document.getElementById('f-hroute').value)||0,
+    deplacement_effectue: deplCheck,
+    km_deplacement: deplCheck ? (parseFloat(document.getElementById('f-km').value)||0) : 0,
+    temps_deplacement_centieme: deplCheck ? (parseFloat(document.getElementById('f-hroute').value)||0) : 0,
     signature_tech: !sigTech.isEmpty() ? sigTech.toDataURL() : null,
     signature_client: !sigClient.isEmpty() ? sigClient.toDataURL() : null,
     statut,
@@ -605,14 +578,15 @@ async function sauvegarder(statut) {
 
   try {
     await sb('POST','interventions',data);
-    const msgs = { brouillon:'💾 Brouillon sauvegardé', transmis:'📤 Transmis !', cloture:'✅ OT clôturé !' };
+    const msgs = { brouillon:'💾 Brouillon', en_cours:'🔄 En cours sauvegardé', transmis:'📤 Transmis !', cloture:'✅ Clôturé !' };
     toast(msgs[statut]);
     resetForm();
+    if (statut !== 'brouillon') showPage('page-liste', document.querySelectorAll('nav button')[1]);
   } catch(e) { toast('❌ '+e.message, 4000); }
 }
 
 function resetForm() {
-  ['f-ot','f-devis','f-client','f-client-id','f-machine-id','f-serie','f-modele',
+  ['f-ot','f-devis','f-client','f-client-id','f-machine-id','f-serie','f-horametre',
    'f-desc','f-remarques-int','f-remarques-client','f-hmo','f-hroute','f-km'].forEach(id => {
     const el = document.getElementById(id); if(el) el.value='';
   });
@@ -620,6 +594,9 @@ function resetForm() {
   document.getElementById('f-type').value='';
   document.getElementById('f-tmo').value='75';
   document.getElementById('f-machine').innerHTML='<option value="">— Sélectionner une machine —</option>';
+  document.getElementById('f-depl-check').checked=false;
+  document.getElementById('depl-detail').style.display='none';
+  document.getElementById('t-depl-line').style.display='none';
   pieces=[]; renderPieces(); sigTech.clear(); sigClient.clear();
   document.getElementById('total-box').style.display='none';
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
@@ -635,7 +612,7 @@ async function genNumOT() {
   } catch(e) { document.getElementById('f-ot').value = `OT-${a}-001`; }
 }
 
-// ===== LISTE OT =====
+// LISTE OT
 async function chargerOT() {
   const el = document.getElementById('liste-ot');
   el.innerHTML = '<div class="empty-state">Chargement...</div>';
@@ -645,15 +622,15 @@ async function chargerOT() {
     const ots = await sb('GET','interventions',null,f);
     if (!ots.length) { el.innerHTML='<div class="empty-state">Aucun OT</div>'; return; }
     el.innerHTML = ots.map(o => `
-      <div class="ot-item ${o.statut}">
+      <div class="ot-item ${o.statut}" onclick="ouvrirOT('${o.id}')">
         <div class="ot-header">
           <span class="ot-num">${o.numero_ot}</span>
-          <span class="badge badge-${o.statut}">${o.statut}</span>
+          <span class="badge badge-${o.statut}">${o.statut.replace('_',' ')}</span>
         </div>
-        <div class="ot-info">${o.technicien||''} · ${o.client||''} · ${o.date_intervention||''}</div>
-        <div class="ot-info">${o.type_intervention||''} ${o.machine?' · '+o.machine:''}</div>
+        <div class="ot-info">${o.technicien||''} · ${o.client||''}</div>
+        <div class="ot-info">${o.date_intervention||''} · ${o.type_intervention||''}</div>
       </div>`).join('');
-  } catch(e) { el.innerHTML='<div class="empty-state">Erreur chargement</div>'; }
+  } catch(e) { el.innerHTML='<div class="empty-state">Erreur</div>'; }
 }
 
 function filtrer(f, btn) {
@@ -663,7 +640,71 @@ function filtrer(f, btn) {
   chargerOT();
 }
 
-// ===== RAPPORT JOURNALIER =====
+async function ouvrirOT(id) {
+  try {
+    const r = await sb('GET','interventions',null,`?id=eq.${id}`);
+    if (!r.length) return;
+    const o = r[0];
+    document.getElementById('modal-ot-titre').textContent = o.numero_ot;
+    const pieces_html = o.pieces_utilisees?.length ?
+      `<table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:4px">
+        <tr style="background:#f5f5f5"><th style="padding:4px;text-align:left">Réf.</th><th style="text-align:left">Désignation</th><th>Qté</th><th>PU</th></tr>
+        ${o.pieces_utilisees.map(p=>`<tr><td style="padding:3px">${p.ref||''}</td><td>${p.designation||''}</td><td style="text-align:center">${p.qte}</td><td style="text-align:right">${p.pu}€</td></tr>`).join('')}
+      </table>` : '<em style="font-size:12px;color:#aaa">Aucune pièce</em>';
+
+    document.getElementById('modal-ot-content').innerHTML = `
+      <div style="font-size:13px;line-height:2">
+        <div><strong>Date :</strong> ${o.date_intervention||'-'}</div>
+        <div><strong>Technicien :</strong> ${o.technicien||'-'}</div>
+        <div><strong>Client :</strong> ${o.client||'-'}</div>
+        <div><strong>Machine :</strong> ${o.machine||'-'} ${o.numero_serie?'('+o.numero_serie+')':''}</div>
+        ${o.horametre?`<div><strong>Horamètre :</strong> ${o.horametre} h</div>`:''}
+        <div><strong>Type :</strong> ${o.type_intervention||'-'}</div>
+        <div><strong>Description :</strong> ${o.description||'-'}</div>
+        ${o.remarques_client?`<div><strong>Remarques client :</strong> ${o.remarques_client}</div>`:''}
+        ${o.remarques_internes?`<div><strong>Remarques internes :</strong> ${o.remarques_internes}</div>`:''}
+        <div><strong>MO :</strong> ${o.heures_mo||0}h · <strong>Déplacement :</strong> ${o.deplacement_effectue?'Oui — '+o.km_deplacement+'km / '+o.temps_deplacement_centieme+'h route':'Non'}</div>
+        <div style="margin-top:8px"><strong>Pièces :</strong></div>
+        ${pieces_html}
+        <div style="margin-top:8px"><span class="badge badge-${o.statut}">${o.statut.replace('_',' ')}</span></div>
+      </div>`;
+
+    const actions = document.getElementById('modal-ot-actions');
+    actions.innerHTML = '';
+    if (o.statut === 'en_cours' || o.statut === 'brouillon') {
+      const btnCloture = document.createElement('button');
+      btnCloture.className = 'btn btn-orange btn-sm';
+      btnCloture.textContent = '✅ Clôturer';
+      btnCloture.onclick = () => changerStatut(id, 'cloture');
+      actions.appendChild(btnCloture);
+    }
+    if (o.statut !== 'cloture') {
+      const btnEC = document.createElement('button');
+      btnEC.className = 'btn btn-blue btn-sm';
+      btnEC.textContent = '🔄 Marquer En cours';
+      btnEC.onclick = () => changerStatut(id, 'en_cours');
+      actions.appendChild(btnEC);
+    }
+    const btnFermer = document.createElement('button');
+    btnFermer.className = 'btn btn-grey btn-sm';
+    btnFermer.textContent = 'Fermer';
+    btnFermer.onclick = () => fermerModal('modal-ot');
+    actions.appendChild(btnFermer);
+
+    document.getElementById('modal-ot').style.display = 'block';
+  } catch(e) { toast('Erreur chargement OT'); }
+}
+
+async function changerStatut(id, statut) {
+  try {
+    await sb('PATCH','interventions',{statut},`?id=eq.${id}`);
+    toast(statut === 'cloture' ? '✅ Clôturé' : '🔄 En cours');
+    fermerModal('modal-ot');
+    chargerOT();
+  } catch(e) { toast('❌ Erreur'); }
+}
+
+// RAPPORT
 async function chargerRapport() {
   const date = document.getElementById('rapport-date').value;
   const tech = document.getElementById('rapport-tech').value;
@@ -675,47 +716,40 @@ async function chargerRapport() {
     if (tech) f += `&technicien=eq.${encodeURIComponent(tech)}`;
     const ots = await sb('GET','interventions',null,f+'&order=technicien');
     if (!ots.length) { el.innerHTML='<div class="empty-state">Aucune intervention ce jour</div>'; return; }
-
-    // Grouper par technicien
     const groupes = {};
-    ots.forEach(o => {
-      if (!groupes[o.technicien]) groupes[o.technicien] = [];
-      groupes[o.technicien].push(o);
-    });
-
-    el.innerHTML = Object.entries(groupes).map(([tech, list]) => {
-      const totHmo = list.reduce((s,o) => s+(o.heures_mo||0), 0);
-      const totRoute = list.reduce((s,o) => s+(o.temps_deplacement_centieme||0), 0);
-      const totKm = list.reduce((s,o) => s+(o.km_deplacement||0), 0);
-      const rows = list.map(o => `
-        <div class="rapport-line">
-          <span>${o.numero_ot} — ${o.client||'-'}</span>
-          <span>${o.heures_mo||0}h trav. · ${o.temps_deplacement_centieme||0}h route · ${o.km_deplacement||0}km</span>
-        </div>`).join('');
+    ots.forEach(o => { if(!groupes[o.technicien]) groupes[o.technicien]=[]; groupes[o.technicien].push(o); });
+    el.innerHTML = Object.entries(groupes).map(([tech,list]) => {
+      const totHmo = list.reduce((s,o)=>s+(o.heures_mo||0),0);
+      const totRoute = list.reduce((s,o)=>s+(o.temps_deplacement_centieme||0),0);
+      const totKm = list.reduce((s,o)=>s+(o.km_deplacement||0),0);
+      const deplCount = list.filter(o=>o.deplacement_effectue).length;
       return `<div class="rapport-tech">
         <h4>👤 ${tech}</h4>
-        ${rows}
+        ${list.map(o=>`<div class="rapport-line">
+          <span>${o.numero_ot} — ${o.client||'-'} <span class="badge badge-${o.statut}" style="font-size:10px">${o.statut.replace('_',' ')}</span></span>
+          <span>${o.heures_mo||0}h · ${o.deplacement_effectue?o.km_deplacement+'km':'-'}</span>
+        </div>`).join('')}
         <div class="rapport-total">
-          <span>TOTAL</span>
-          <span>${totHmo}h travail · ${totRoute}h route · ${totKm} km</span>
+          <span>TOTAL JOUR</span>
+          <span>${totHmo}h travail · ${totRoute}h route · ${totKm}km · ${deplCount} dépl.</span>
         </div>
       </div>`;
     }).join('');
   } catch(e) { el.innerHTML='<div class="empty-state">Erreur</div>'; }
 }
 
-// ===== CLIENTS =====
+// CLIENTS
 async function chargerClients() {
   const el = document.getElementById('liste-clients');
   el.innerHTML = '<div class="empty-state">Chargement...</div>';
   try {
     const clients = await sb('GET','clients',null,'?order=nom');
     if (!clients.length) { el.innerHTML='<div class="empty-state">Aucun client</div>'; return; }
-    el.innerHTML = clients.map(c => `
+    el.innerHTML = clients.map(c=>`
       <div class="client-item">
         <div>
           <div class="client-name">${c.nom}</div>
-          <div class="client-info">${c.contact||''} ${c.telephone?'· '+c.telephone:''} ${c.email?'· '+c.email:''}</div>
+          <div class="client-info">${c.contact||''} ${c.telephone?'· '+c.telephone:''}</div>
         </div>
         <button class="btn btn-sm btn-teal" onclick="editClient('${c.id}')">✏️</button>
       </div>`).join('');
@@ -724,15 +758,15 @@ async function chargerClients() {
 }
 
 function ouvrirModalClient(client=null) {
-  document.getElementById('mc-id').value = client?.id||'';
-  document.getElementById('mc-nom').value = client?.nom||'';
-  document.getElementById('mc-adresse').value = client?.adresse||'';
-  document.getElementById('mc-contact').value = client?.contact||'';
-  document.getElementById('mc-tel').value = client?.telephone||'';
-  document.getElementById('mc-email').value = client?.email||'';
-  machinesModal = [];
+  document.getElementById('mc-id').value=client?.id||'';
+  document.getElementById('mc-nom').value=client?.nom||'';
+  document.getElementById('mc-adresse').value=client?.adresse||'';
+  document.getElementById('mc-contact').value=client?.contact||'';
+  document.getElementById('mc-tel').value=client?.telephone||'';
+  document.getElementById('mc-email').value=client?.email||'';
+  machinesModal=[];
   renderMachinesModal();
-  document.getElementById('modal-client').style.display = 'block';
+  document.getElementById('modal-client').style.display='block';
 }
 
 async function editClient(id) {
@@ -740,7 +774,7 @@ async function editClient(id) {
     const r = await sb('GET','clients',null,`?id=eq.${id}`);
     if (r.length) ouvrirModalClient(r[0]);
     const m = await sb('GET','machines',null,`?client_id=eq.${id}&order=modele`);
-    machinesModal = m.map(x => ({...x,_new:false}));
+    machinesModal = m.map(x=>({...x,_new:false}));
     renderMachinesModal();
   } catch(e) { toast('Erreur'); }
 }
@@ -748,12 +782,12 @@ async function editClient(id) {
 function fermerModal(id) { document.getElementById(id).style.display='none'; }
 
 function ajouterMachineModal() {
-  machinesModal.push({ _id:Date.now(), marque:'', modele:'', numero_serie:'', _new:true });
+  machinesModal.push({_id:Date.now(),marque:'',modele:'',numero_serie:'',_new:true});
   renderMachinesModal();
 }
 function renderMachinesModal() {
   const el = document.getElementById('mc-machines');
-  el.innerHTML = machinesModal.map((m,i) => `
+  el.innerHTML = machinesModal.map((m,i)=>`
     <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-bottom:6px;align-items:center">
       <input type="text" placeholder="Marque Modèle" value="${(m.marque||'')+' '+(m.modele||'')}"
         oninput="updateMM(${i},'modele',this.value)" style="font-size:12px;padding:7px">
@@ -778,30 +812,22 @@ async function sauvegarderClient() {
   try {
     const cid = document.getElementById('mc-id').value;
     let savedId;
-    if (cid) {
-      await sb('PATCH','clients',data,`?id=eq.${cid}`);
-      savedId = cid;
-    } else {
-      const r = await sb('POST','clients',data);
-      savedId = r[0]?.id;
-    }
+    if (cid) { await sb('PATCH','clients',data,`?id=eq.${cid}`); savedId=cid; }
+    else { const r = await sb('POST','clients',data); savedId=r[0]?.id; }
     for (const m of machinesModal.filter(x=>x._new)) {
-      const parts = (m.modele||'').trim().split(' ');
-      await sb('POST','machines',{
-        client_id: savedId,
-        marque: parts[0]||'',
-        modele: parts.slice(1).join(' ')||parts[0]||'',
-        numero_serie: m.numero_serie||''
-      });
+      const parts=(m.modele||'').trim().split(' ');
+      await sb('POST','machines',{client_id:savedId,marque:parts[0]||'',modele:parts.slice(1).join(' ')||parts[0]||'',numero_serie:m.numero_serie||''});
     }
     toast('✅ Client sauvegardé');
     fermerModal('modal-client');
-    chargerClients();
-    chargerClientsCache();
-  } catch(e) { toast('❌ '+e.message, 4000); }
+    chargerClients(); chargerClientsCache();
+  } catch(e) { toast('❌ '+e.message,4000); }
 }
 
-// ===== INIT =====
+async function chargerClientsCache() {
+  try { clientsCache = await sb('GET','clients',null,'?order=nom'); } catch(e) { clientsCache=[]; }
+}
+
 window.onload = async () => {
   initSig();
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
