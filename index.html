@@ -683,7 +683,7 @@ async function cloturerEtEnvoyer(o) {
   // Envoi email via Supabase Edge Function
   try {
     const emailClient = clientSelectionne?.email || '';
-    await fetch(`${SB_URL}/functions/v1/send-rapport`, {
+    await fetch(`${SB_URL}/functions/v1/super-action`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${SB_KEY}`,
